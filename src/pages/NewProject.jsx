@@ -44,6 +44,7 @@ export default function NewProject({ auth }) {
       if (saved === 'new') return 'new'
       if (saved === 'computer') return 'computer'
       if (saved === 'other') return 'other'
+      if (saved === 'builder') return null
       return null
     } catch { return null }
   })
@@ -56,7 +57,10 @@ export default function NewProject({ auth }) {
 
   function chooseSource(nextSource) {
     setSource(nextSource)
-    try { localStorage.setItem('yourkly_onboarding_source', nextSource) } catch { /* optional */ }
+    try {
+      if (nextSource) localStorage.setItem('yourkly_onboarding_source', nextSource)
+      else localStorage.removeItem('yourkly_onboarding_source')
+    } catch { /* optional */ }
   }
 
   function finishOnboarding() {
@@ -128,7 +132,13 @@ export default function NewProject({ auth }) {
         <Link to="/projects" className="back-link">← My Projects</Link>
         <h1 className="newproject-title">Add a project</h1>
         <p className="newproject-intro">
-          Where is your project right now? Choose the answer that sounds most like your situation.
+          {(() => {
+            try {
+              return localStorage.getItem('yourkly_onboarding_source') === 'builder'
+                ? 'You said you already started this in another builder. Which one are you using?'
+                : 'Where is your project right now? Choose the answer that sounds most like your situation.'
+            } catch { return 'Where is your project right now? Choose the answer that sounds most like your situation.' }
+          })()}
         </p>
 
         <div className="newproject-card">
