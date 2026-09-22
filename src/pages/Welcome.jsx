@@ -22,6 +22,7 @@ export default function Welcome() {
   const [signingIn, setSigningIn] = useState(false)
   const [startFailed, setStartFailed] = useState(false)
   const [previewScene, setPreviewScene] = useState(0)
+  const [onboarding, setOnboarding] = useState(null)
 
   useEffect(() => {
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
@@ -60,6 +61,50 @@ export default function Welcome() {
   const params = new URLSearchParams(window.location.search)
   const authError = params.get('auth_error')
   const disconnectFailed = params.get('disconnect_failed') === '1'
+
+  if (onboarding === 'choose') {
+    return (
+      <div className="welcome-page onboarding-page">
+        <div className="onboarding-shell">
+          <header className="landing-header"><BrandWordmark className="brand-wordmark--landing" /><button type="button" className="landing-signin" onClick={startSignIn}>Sign in</button></header>
+          <button type="button" className="back-link onboarding-back" onClick={() => setOnboarding(null)}>← Back</button>
+          <div className="onboarding-progress"><span>STEP 1 OF 3</span><i><b /></i></div>
+          <h1>Where is your project<br />right now?</h1>
+          <p className="onboarding-lead">Tell us where you're starting from. We'll guide you from here.</p>
+          <div className="onboarding-options">
+            <button onClick={startSignIn}><strong>I already have a GitHub account</strong><small>Connect my existing account.</small><b>›</b></button>
+            <button onClick={() => setOnboarding('github')}><strong>I don't have a GitHub account yet</strong><small>I'm new and want to create a free account.</small><b>›</b></button>
+            <button onClick={() => setOnboarding('github')}><strong>My project is on my computer</strong><small>We'll help you get it into GitHub.</small><b>›</b></button>
+            <button onClick={() => setOnboarding('github')}><strong>It's on Lovable, Replit, Bolt, or Cursor</strong><small>We'll show you how to bring it to GitHub.</small><b>›</b></button>
+            <button onClick={() => setOnboarding('github')}><strong>It's somewhere else</strong><small>We'll help you connect the pieces.</small><b>›</b></button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (onboarding === 'github') {
+    return (
+      <div className="welcome-page onboarding-page">
+        <div className="onboarding-shell">
+          <header className="landing-header"><BrandWordmark className="brand-wordmark--landing" /><button type="button" className="landing-signin" onClick={startSignIn}>Sign in</button></header>
+          <button type="button" className="back-link onboarding-back" onClick={() => setOnboarding('choose')}>← Back</button>
+          <div className="onboarding-progress"><span>STEP 2 OF 3</span><i><b className="onboarding-progress--two" /></i></div>
+          <h1>Create your free<br />GitHub account</h1>
+          <p className="onboarding-lead">Yourkly uses GitHub to keep your project's files and history. GitHub is free and only takes a minute.</p>
+          <ol className="onboarding-checklist">
+            <li><b>1</b><span>Go to GitHub <small>(opens in a new tab)</small></span></li>
+            <li><b>2</b><span>Create your free account</span></li>
+            <li><b>3</b><span>Come back to Yourkly</span></li>
+            <li><b>4</b><span>Connect your new account</span></li>
+          </ol>
+          <a className="landing-cta onboarding-github-cta" href="https://github.com/signup" target="_blank" rel="noopener noreferrer">Go to GitHub ↗</a>
+          <button type="button" className="text-button" onClick={startSignIn}>Already have a GitHub account? Connect instead</button>
+          <div className="onboarding-return">We'll be here when you get back.</div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="welcome-page">
@@ -109,9 +154,9 @@ export default function Welcome() {
                   <span>No new password. Your GitHub account is your login.</span>
                   <span>
                     Don't have GitHub yet?{' '}
-                    <a href="https://github.com/signup" target="_blank" rel="noopener noreferrer" className="text-link">
+                    <button type="button" className="text-link text-button-inline" onClick={() => setOnboarding('choose')}>
                       Create a free GitHub account
-                    </a>
+                    </button>
                   </span>
                   <span>Your projects stay in your GitHub account. Yourkly makes them easier to understand.</span>
                 </div>
@@ -149,6 +194,8 @@ export default function Welcome() {
               </div>
             </div>
           </section>
+
+          <button type="button" className="landing-start-guide" onClick={() => setOnboarding('choose')}>Not sure where to start? We'll guide you →</button>
 
           <section className="landing-trust">Your files stay in GitHub. Yourkly doesn't copy your projects.</section>
 
