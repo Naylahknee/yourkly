@@ -24,6 +24,16 @@ export default function Welcome() {
   const [previewScene, setPreviewScene] = useState(0)
   const [onboarding, setOnboarding] = useState(null)
 
+  function rememberStart(source) {
+    try { localStorage.setItem('yourkly_onboarding_source', source) } catch { /* continue without persistence */ }
+  }
+
+  function chooseStart(source) {
+    rememberStart(source)
+    if (source === 'github') startSignIn()
+    else setOnboarding('github')
+  }
+
   useEffect(() => {
     const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
     if (reducedMotion) {
@@ -72,11 +82,11 @@ export default function Welcome() {
           <h1>Where is your project<br />right now?</h1>
           <p className="onboarding-lead">Tell us where you're starting from. We'll guide you from here.</p>
           <div className="onboarding-options">
-            <button onClick={startSignIn}><strong>I already have a GitHub account</strong><small>Connect my existing account.</small><b>›</b></button>
-            <button onClick={() => setOnboarding('github')}><strong>I don't have a GitHub account yet</strong><small>I'm new and want to create a free account.</small><b>›</b></button>
-            <button onClick={() => setOnboarding('github')}><strong>My project is on my computer</strong><small>We'll help you get it into GitHub.</small><b>›</b></button>
-            <button onClick={() => setOnboarding('github')}><strong>It's on Lovable, Replit, Bolt, or Cursor</strong><small>We'll show you how to bring it to GitHub.</small><b>›</b></button>
-            <button onClick={() => setOnboarding('github')}><strong>It's somewhere else</strong><small>We'll help you connect the pieces.</small><b>›</b></button>
+            <button onClick={() => chooseStart('github')}><strong>I already have a GitHub account</strong><small>Connect my existing account.</small><b>›</b></button>
+            <button onClick={() => chooseStart('new')}><strong>I don't have a GitHub account yet</strong><small>I'm new and want to create a free account.</small><b>›</b></button>
+            <button onClick={() => chooseStart('computer')}><strong>My project is on my computer</strong><small>We'll help you get it into GitHub.</small><b>›</b></button>
+            <button onClick={() => chooseStart('builder')}><strong>It's on Lovable, Replit, Bolt, or Cursor</strong><small>We'll remember that and continue from there.</small><b>›</b></button>
+            <button onClick={() => chooseStart('other')}><strong>It's somewhere else</strong><small>We'll help you connect the pieces.</small><b>›</b></button>
           </div>
         </div>
       </div>
