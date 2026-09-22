@@ -31,6 +31,7 @@ export default function Welcome() {
   function chooseStart(source) {
     rememberStart(source)
     if (source === 'github') startSignIn()
+    else if (source === 'yourkly') setOnboarding('native')
     else setOnboarding('github')
   }
 
@@ -82,12 +83,34 @@ export default function Welcome() {
           <h1>Where is your project<br />right now?</h1>
           <p className="onboarding-lead">Tell us where you're starting from. We'll guide you from here.</p>
           <div className="onboarding-options">
+            <button onClick={() => chooseStart('yourkly')}><strong>I don't want to use GitHub</strong><small>Keep my projects with Yourkly instead.</small><b>›</b></button>
             <button onClick={() => chooseStart('github')}><strong>I already have a GitHub account</strong><small>Connect my existing account.</small><b>›</b></button>
             <button onClick={() => chooseStart('new')}><strong>I don't have a GitHub account yet</strong><small>I'm new and want to create a free account.</small><b>›</b></button>
             <button onClick={() => chooseStart('computer')}><strong>My project is on my computer</strong><small>We'll help you get it into GitHub.</small><b>›</b></button>
             <button onClick={() => chooseStart('builder')}><strong>It's on Lovable, Replit, Bolt, or Cursor</strong><small>We'll remember that and continue from there.</small><b>›</b></button>
             <button onClick={() => chooseStart('other')}><strong>It's somewhere else</strong><small>We'll help you connect the pieces.</small><b>›</b></button>
           </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (onboarding === 'native') {
+    return (
+      <div className="welcome-page onboarding-page mobile-flow mobile-flow--native">
+        <div className="onboarding-shell">
+          <header className="landing-header"><BrandWordmark className="brand-wordmark--landing" /><button type="button" className="landing-signin" onClick={startSignIn}>Sign in</button></header>
+          <button type="button" className="back-link onboarding-back" onClick={() => setOnboarding('choose')}>← Back</button>
+          <div className="onboarding-progress"><span>YOURKLY PROJECTS</span><i><b className="onboarding-progress--two" /></i></div>
+          <h1>Use Yourkly without GitHub</h1>
+          <p className="onboarding-lead">Yourkly can keep your project, versions, and changes without asking you to create or connect a GitHub account.</p>
+          <div className="onboarding-checklist">
+            <div><strong>Keep it with Yourkly</strong><small>Your files and version history stay in your Yourkly project.</small></div>
+            <div><strong>Work in plain language</strong><small>No repositories, commits, branches, or GitHub setup.</small></div>
+            <div><strong>Export when you want</strong><small>You are not locked in. GitHub can be connected later if you choose.</small></div>
+          </div>
+          <div className="error-box">Yourkly-managed project storage is being added next. We won't pretend this is available until the storage and account layer are live.</div>
+          <button type="button" className="landing-cta" disabled>Start with Yourkly — coming next</button>
         </div>
       </div>
     )
