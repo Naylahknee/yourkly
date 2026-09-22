@@ -11,7 +11,7 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BrandWordmark from '../components/BrandWordmark'
 
-export default function AuthCallback({ onSignIn }) {
+export default function AuthCallback() {
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -37,7 +37,9 @@ export default function AuthCallback({ onSignIn }) {
     })
       .then(r => {
         if (!r.ok) throw new Error('exchange_failed')
-        onSignIn()
+        // Replace the callback URL directly. The server has already set the
+        // session cookie, so a second client-side sign-in cycle is unnecessary.
+        window.location.replace('/')
       })
       .catch(() => navigate('/?auth_error=exchange_failed', { replace: true }))
   }, [])
