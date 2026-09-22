@@ -4479,3 +4479,153 @@ a:hover { color: var(--purple-dark); }
   .projects-empty { text-align: center; padding: 36px 20px; }
   .projects-empty .pl-btn-primary { width: 100%; min-height: 52px; }
 }
+
+
+/* Mobile screen rebuild
+   These rules intentionally compose the phone experience as its own UI rather
+   than merely shrinking the desktop page. Desktop remains unchanged. */
+@media (max-width: 560px) {
+  body { background: var(--canvas); }
+  .mobile-landing, .mobile-flow { background: var(--canvas); }
+
+  /* Shared phone masthead */
+  .mobile-landing .landing-header,
+  .mobile-flow .landing-header {
+    height: 58px;
+    min-height: 58px;
+    padding: 0;
+    align-items: center;
+  }
+  .mobile-landing .brand-lockup,
+  .mobile-flow .brand-lockup { gap: 5px; height: 27px; }
+  .mobile-landing .brand-wordmark,
+  .mobile-flow .brand-wordmark { height: 19px; }
+  .mobile-landing .brand-stork-crop,
+  .mobile-flow .brand-stork-crop { width: 22px; height: 23px; }
+  .mobile-landing .brand-stork-crop img,
+  .mobile-flow .brand-stork-crop img { width: 59px; left: -27px; top: -3px; }
+  .mobile-landing .landing-signin,
+  .mobile-flow .landing-signin { font-size: 13.5px; }
+
+  /* Screen 1 — welcome */
+  .mobile-landing .landing-shell { padding: max(8px, env(safe-area-inset-top, 0px)) 20px 0; }
+  .mobile-landing .landing-hero { gap: 0; padding: 42px 0 54px; }
+  .mobile-landing .landing-hero-copy { text-align: center; }
+  .mobile-landing .landing-hero-copy h1 {
+    max-width: 310px; margin: 0 auto; font-size: 41px; line-height: .99;
+    letter-spacing: -.052em;
+  }
+  .mobile-landing .landing-hero-copy > p:not(.error-box) {
+    max-width: 318px; margin: 19px auto 0; font-size: 15px; line-height: 1.5;
+  }
+  .mobile-landing .landing-cta-stack { width: 100%; margin: 27px auto 0; gap: 9px; }
+  .mobile-landing .landing-cta { min-height: 52px; border-radius: 9px; font-size: 15px; }
+  .mobile-landing .landing-cta-stack > span { font-size: 11.5px; line-height: 1.4; }
+  .mobile-landing .landing-product-wrap { margin-top: 68px; }
+  .mobile-landing .landing-stork { width: 78px; right: 13px; top: -43px; }
+  .mobile-landing .landing-product-preview {
+    min-height: 254px; padding: 17px; border-radius: 16px;
+    border-color: var(--grey-border); box-shadow: 0 12px 34px rgba(28,27,34,.07);
+  }
+  .mobile-landing .landing-product-icon { width: 30px; height: 30px; border-radius: 8px; font-size: 14px; }
+  .mobile-landing .landing-product-head strong { font-size: 14px; }
+  .mobile-landing .landing-product-head small { font-size: 10.5px; }
+  .mobile-landing .landing-product-scenes { height: 164px; margin-top: 19px; }
+  .mobile-landing .landing-start-guide { margin: 0 auto 24px; font-size: 12.5px; }
+  .mobile-landing .landing-trust { margin: 0 -20px; padding: 21px 24px; font-size: 12.5px; }
+  .mobile-landing .landing-steps { padding: 46px 0 52px; }
+  .mobile-landing .landing-steps h2 { max-width: 250px; font-size: 29px; margin-bottom: 24px; }
+  .mobile-landing .landing-step-grid article { padding: 18px; border-radius: 12px; }
+  .mobile-landing .landing-step-grid h3 { font-size: 18px; }
+  .mobile-landing .landing-step-grid p { font-size: 13px; }
+  .mobile-landing .landing-footer { padding: 22px 0 max(26px,env(safe-area-inset-bottom)); }
+
+  /* Screens 2/3 — signed-out guided onboarding */
+  .mobile-flow .onboarding-shell {
+    width: 100%; min-height: 100dvh; padding: max(8px,env(safe-area-inset-top,0px)) 20px max(24px,env(safe-area-inset-bottom,0px));
+  }
+  .mobile-flow .onboarding-back { order: 1; margin: 15px 0 18px; font-size: 13px; }
+  .mobile-flow .onboarding-progress { order: 2; margin-bottom: 17px; }
+  .mobile-flow h1 { order: 3; max-width: 320px; margin-bottom: 11px; font-size: 31px; line-height: 1.04; }
+  .mobile-flow .onboarding-lead { order: 4; max-width: 330px; margin-bottom: 22px; font-size: 14px; }
+  .mobile-flow .onboarding-options,
+  .mobile-flow .onboarding-checklist { order: 5; }
+  .mobile-flow .onboarding-github-cta { order: 6; }
+  .mobile-flow .text-button { order: 7; }
+  .mobile-flow .onboarding-return { order: 8; }
+  .mobile-flow .onboarding-options { gap: 8px; }
+  .mobile-flow .onboarding-options button {
+    min-height: 64px; padding: 12px 39px 12px 14px; border-radius: 10px;
+    border-color: var(--grey-border); box-shadow: none;
+  }
+  .mobile-flow .onboarding-options strong { font-size: 13.5px; }
+  .mobile-flow .onboarding-options small { font-size: 11.5px; }
+  .mobile-flow .onboarding-progress span { font-size: 10px; }
+  .mobile-flow .onboarding-checklist { padding: 14px; border-radius: 10px; gap: 11px; }
+  .mobile-flow .onboarding-checklist li { font-size: 13px; }
+  .mobile-flow .onboarding-github-cta { margin-top: 2px; min-height: 52px; padding: 16px; font-size: 15px; }
+  .mobile-flow .onboarding-return { margin-top: auto; padding-top: 30px; font-size: 12.5px; }
+
+  /* Add Project — dedicated phone page */
+  .mobile-project-flow {
+    min-height: calc(100dvh - 64px);
+    padding: 22px 18px calc(92px + env(safe-area-inset-bottom,0px)) !important;
+  }
+  .mobile-project-flow > .back-link { display: inline-flex; margin-bottom: 25px; font-size: 13px; }
+  .mobile-project-flow .newproject-title { margin-bottom: 9px; font-size: 30px; line-height: 1.04; }
+  .mobile-project-flow .newproject-intro { max-width: 330px; margin-bottom: 24px; font-size: 13.5px; }
+  .mobile-project-flow .newproject-card {
+    gap: 20px; padding: 16px; background: #fff; border: 1px solid var(--grey-border);
+    border-radius: 12px; box-shadow: none;
+  }
+  .mobile-project-flow .newproject-label { font-size: 14px; }
+  .mobile-project-flow .newproject-hint { margin-top: 3px; font-size: 11.5px; }
+  .mobile-project-flow .newproject-choices { grid-template-columns: 1fr; gap: 8px; }
+  .mobile-project-flow .newproject-choices .ai-tool {
+    position: relative; min-height: 50px; padding: 0 39px 0 14px; justify-content: flex-start;
+    text-align: left; background: var(--canvas); border-color: var(--grey-border); border-radius: 9px;
+  }
+  .mobile-project-flow .newproject-choices .ai-tool::after {
+    content: '›'; position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--grey); font: 400 20px/1 var(--font);
+  }
+  .mobile-project-flow .newproject-input { min-height: 48px; padding: 0 13px; border-radius: 9px; font-size: 16px; }
+  .mobile-project-flow .newproject-actions,
+  .mobile-project-flow .newproject-empty-actions { grid-template-columns: 1fr; }
+  .mobile-project-flow .newproject-actions > *,
+  .mobile-project-flow .newproject-empty-actions > * { min-height: 50px; width: 100%; }
+  .mobile-project-flow .newproject-created { padding: 14px; border-radius: 10px; font-size: 13px; }
+  .mobile-project-flow .newproject-empty { padding: 24px 16px; border-radius: 12px; }
+
+  /* My Projects — phone list, not a compressed desktop list */
+  .mobile-projects {
+    width: 100%; max-width: none; padding: 22px 18px calc(94px + env(safe-area-inset-bottom,0px)) !important;
+  }
+  .mobile-projects .projects-header { margin-bottom: 8px; }
+  .mobile-projects .projects-title { font-size: 29px; }
+  .mobile-projects .projects-new {
+    width: 42px; height: 42px; min-height: 42px; padding: 0; border-radius: 9px; font-size: 0;
+  }
+  .mobile-projects .projects-new::after { content: '+'; font: 400 25px/1 var(--font); }
+  .mobile-projects .projects-subtitle { max-width: 310px; margin-bottom: 16px; font-size: 13px; }
+  .mobile-projects .projects-count { margin-bottom: 18px; font-size: 11.5px; }
+  .mobile-projects .projects-list { gap: 9px; }
+  .mobile-projects .projects-card {
+    min-height: 86px; padding: 14px; align-items: center; border-color: var(--grey-border);
+    border-radius: 11px; box-shadow: none; background: #fff;
+  }
+  .mobile-projects .projects-card-name { font-size: 15px; }
+  .mobile-projects .projects-card-desc { margin-top: 3px; font-size: 12px; }
+  .mobile-projects .projects-card-meta { margin-top: 6px; font-size: 10.5px; }
+  .mobile-projects .projects-card-url { display: none; }
+  .mobile-projects .projects-card-open { width: 22px; font-size: 0; }
+  .mobile-projects .projects-card-open::after { content: '›'; color: var(--grey); font: 400 23px/1 var(--font); }
+  .mobile-projects .pl-pill { padding: 3px 7px; font-size: 10px; }
+  .mobile-projects .projects-empty {
+    margin-top: 26px; padding: 32px 18px; text-align: center; background: #fff;
+    border: 1px solid var(--grey-border); border-radius: 12px;
+  }
+  .mobile-projects .projects-empty-title { font-size: 18px; }
+  .mobile-projects .projects-empty-body { font-size: 13px; }
+  .mobile-projects .projects-empty .pl-btn-primary { width: 100%; min-height: 50px; }
+}
