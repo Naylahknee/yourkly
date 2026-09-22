@@ -54,7 +54,7 @@ export default function Projects({ auth }) {
   }
 
   return (
-    <div className="screen-padded projects-screen">
+    <div className="screen-padded projects-screen mobile-projects">
       <div className="projects-header">
         <h1 className="projects-title">My Projects</h1>
         <Link to="/new" className="pl-btn-primary projects-new">Add a project</Link>
