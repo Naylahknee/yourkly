@@ -46,6 +46,31 @@ export default function Home({ auth }) {
 
   const owner = user?.login
   const firstName = user?.name?.split(' ')[0] || user?.login || ''
+  let onboardingSource = null
+  try { onboardingSource = localStorage.getItem('yourkly_onboarding_source') } catch { /* optional */ }
+
+  const onboardingCopy = {
+    builder: {
+      title: 'Bring in the project you already started',
+      body: 'You told us your project is in Lovable, Replit, Bolt, or Cursor. Your GitHub account is connected now, so we can continue from there without making you learn GitHub first.',
+      cta: 'Continue with my project',
+    },
+    computer: {
+      title: 'Bring in the project on your computer',
+      body: 'Your GitHub account is connected. Next, Yourkly will guide you through getting the project into the account that keeps its files and history.',
+      cta: 'Continue with my project',
+    },
+    other: {
+      title: 'Let’s connect the project you already have',
+      body: 'Your GitHub account is connected. Tell Yourkly where the project lives and we’ll continue from there in plain language.',
+      cta: 'Continue with my project',
+    },
+    new: {
+      title: 'Make your first project',
+      body: 'Your GitHub account is connected. Give your project a name and Yourkly will create the GitHub project underneath for you.',
+      cta: 'Create my first project',
+    },
+  }[onboardingSource]
 
   // Recent Save Points for the projects on screen — this is what fills
   // "what you and your AI tools have done" before any update exists.
@@ -141,13 +166,11 @@ export default function Home({ auth }) {
 
         <section className="firstrun-card">
           <div className="firstrun-card-label">Start here</div>
-          <h2 className="firstrun-card-title">Make your first project</h2>
+          <h2 className="firstrun-card-title">{onboardingCopy?.title || 'Make your first project'}</h2>
           <p className="firstrun-card-body">
-            A project is one place for everything that belongs together — an app, a book,
-            a client job. From the moment you make one, Yourk keeps every version of it,
-            so you can always go back to how it was.
+            {onboardingCopy?.body || 'A project is one place for everything that belongs together — an app, a book, or a client job. Yourkly keeps GitHub underneath so you can work in project language.'}
           </p>
-          <Link to="/new" className="pl-btn-primary firstrun-cta">Make your first project</Link>
+          <Link to="/new" className="pl-btn-primary firstrun-cta">{onboardingCopy?.cta || 'Make your first project'}</Link>
           <p className="firstrun-card-foot">
             It asks for a name and one sentence about what it's for. Nothing is visible to
             anyone else unless you choose that.
