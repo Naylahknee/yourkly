@@ -64,7 +64,7 @@ export default function Welcome() {
 
   if (onboarding === 'choose') {
     return (
-      <div className="welcome-page onboarding-page">
+      <div className="welcome-page onboarding-page mobile-flow mobile-flow--choose">
         <div className="onboarding-shell">
           <header className="landing-header"><BrandWordmark className="brand-wordmark--landing" /><button type="button" className="landing-signin" onClick={startSignIn}>Sign in</button></header>
           <button type="button" className="back-link onboarding-back" onClick={() => setOnboarding(null)}>← Back</button>
@@ -85,7 +85,7 @@ export default function Welcome() {
 
   if (onboarding === 'github') {
     return (
-      <div className="welcome-page onboarding-page">
+      <div className="welcome-page onboarding-page mobile-flow mobile-flow--github">
         <div className="onboarding-shell">
           <header className="landing-header"><BrandWordmark className="brand-wordmark--landing" /><button type="button" className="landing-signin" onClick={startSignIn}>Sign in</button></header>
           <button type="button" className="back-link onboarding-back" onClick={() => setOnboarding('choose')}>← Back</button>
@@ -107,7 +107,7 @@ export default function Welcome() {
   }
 
   return (
-    <div className="welcome-page">
+    <div className="welcome-page mobile-landing">
       <div className="landing-shell">
         <header className="landing-header">
           <BrandWordmark className="brand-wordmark--landing" />
