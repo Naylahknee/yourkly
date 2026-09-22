@@ -10,6 +10,7 @@
  * meta line only prints the parts that exist (HANDOFF §0).
  */
 
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { flushSync } from 'react-dom'
 import LoadingSkeleton from '../components/LoadingSkeleton'
@@ -29,13 +30,16 @@ export default function Projects({ auth }) {
   // projects exist and which of them you asked to see.
   const { projects: repos, allProjects, hiddenCount, loading, error } = useProjects(auth)
   const deliveryKey = owner ? `yourkly_projects_delivered_${owner}` : null
-  let showDelivery = false
-  if (!loading && !error && repos.length > 0 && deliveryKey) {
+  const [showDelivery, setShowDelivery] = useState(false)
+
+  useEffect(() => {
+    if (loading || error || repos.length === 0 || !deliveryKey) return
     try {
-      showDelivery = sessionStorage.getItem(deliveryKey) !== 'true'
-      if (showDelivery) sessionStorage.setItem(deliveryKey, 'true')
-    } catch { /* animation can safely replay when storage is unavailable */ }
-  }
+      if (sessionStorage.getItem(deliveryKey) === 'true') return
+      sessionStorage.setItem(deliveryKey, 'true')
+    } catch { /* a private browser may block storage; the animation can still run */ }
+    setShowDelivery(true)
+  }, [loading, error, repos.length, deliveryKey])
 
   // Remember which project was opened last — this is what feeds "where you left off".
   function rememberOpen(repoName) {
