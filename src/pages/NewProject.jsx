@@ -38,13 +38,30 @@ export default function NewProject({ auth }) {
   const owner = user?.login
   const navigate = useNavigate()
 
-  const [source, setSource]       = useState(null)
+  const [source, setSource]       = useState(() => {
+    try {
+      const saved = localStorage.getItem('yourkly_onboarding_source')
+      if (saved === 'new') return 'new'
+      if (saved === 'computer') return 'computer'
+      if (saved === 'other') return 'other'
+      return null
+    } catch { return null }
+  })
   const [name, setName]           = useState('')
   const [description, setDesc]    = useState('')
   const [isPrivate, setPrivate]   = useState(true)
   const [saving, setSaving]       = useState(false)
   const [error, setError]         = useState(null)
   const [created, setCreated]     = useState(null)
+
+  function chooseSource(nextSource) {
+    setSource(nextSource)
+    try { localStorage.setItem('yourkly_onboarding_source', nextSource) } catch { /* optional */ }
+  }
+
+  function finishOnboarding() {
+    try { localStorage.removeItem('yourkly_onboarding_source') } catch { /* optional */ }
+  }
 
   const slug = name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
 
@@ -62,6 +79,7 @@ export default function NewProject({ auth }) {
         })
       }
       setCreated(repo)
+      finishOnboarding()
     } catch (err) {
       setError(err.message || 'Could not create the project. Please try again.')
     } finally {
@@ -124,7 +142,7 @@ export default function NewProject({ auth }) {
                 key={option.id}
                 type="button"
                 className="ai-tool"
-                onClick={() => setSource(option.id)}
+                onClick={() => chooseSource(option.id)}
               >
                 {option.label}
               </button>
@@ -138,7 +156,7 @@ export default function NewProject({ auth }) {
   if (source === 'github') {
     return (
       <div className="screen-padded newproject-screen mobile-project-flow">
-        <button type="button" className="back-link" onClick={() => setSource(null)}>← Back</button>
+        <button type="button" className="back-link" onClick={() => chooseSource(null)}>← Back</button>
         <h1 className="newproject-title">Already on GitHub</h1>
         <p className="newproject-intro">
           Yourkly already checks the GitHub account you connected. If Yourkly can access the project, it will be available in My Projects.
@@ -172,7 +190,7 @@ export default function NewProject({ auth }) {
           </div>
           <div className="newproject-actions">
             <button type="button" className="pl-btn-primary" onClick={() => navigate('/projects')}>I've connected it — check My Projects</button>
-            <button type="button" className="pl-btn" onClick={() => setSource(null)}>Choose a different option</button>
+            <button type="button" className="pl-btn" onClick={() => chooseSource(null)}>Choose a different option</button>
           </div>
         </div>
       </div>
