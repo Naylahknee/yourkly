@@ -11,6 +11,7 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { createRepo, updateRepoSettings } from '../api/github'
 import { ownerOf } from '../utils/useProject'
+import StorkDelivery from '../components/StorkDelivery'
 
 const SOURCE_OPTIONS = [
   { id: 'lovable', label: 'Lovable' },
@@ -73,7 +74,8 @@ export default function NewProject({ auth }) {
     return (
       <div className="screen-padded newproject-screen">
         <Link to="/projects" className="back-link">← My Projects</Link>
-        <h1 className="newproject-title">Your project is ready.</h1>
+        <StorkDelivery variant="created" projectName={name.trim()} />
+        <h1 className="newproject-title newproject-title--after-delivery">Your project is ready.</h1>
         <p className="newproject-intro">
           Your project's files and history live in your GitHub account. Yourkly helps you understand what's happening with them.
         </p>

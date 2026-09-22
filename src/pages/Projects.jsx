@@ -10,6 +10,7 @@
  * meta line only prints the parts that exist (HANDOFF §0).
  */
 
+import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { flushSync } from 'react-dom'
 import LoadingSkeleton from '../components/LoadingSkeleton'
@@ -20,6 +21,7 @@ import { getUpdates } from '../utils/updateMemory'
 import { projectName } from '../utils/projectName'
 import { projectStatus } from '../utils/projectStatus'
 import { ownerOf } from '../utils/useProject'
+import StorkDelivery from '../components/StorkDelivery'
 
 export default function Projects({ auth }) {
   const owner = auth.user?.login
@@ -27,6 +29,17 @@ export default function Projects({ auth }) {
   // Shared with Home and Recent Activity, so all three agree on which
   // projects exist and which of them you asked to see.
   const { projects: repos, allProjects, hiddenCount, loading, error } = useProjects(auth)
+  const deliveryKey = owner ? `yourkly_projects_delivered_${owner}` : null
+  const [showDelivery, setShowDelivery] = useState(false)
+
+  useEffect(() => {
+    if (loading || error || repos.length === 0 || !deliveryKey) return
+    try {
+      if (sessionStorage.getItem(deliveryKey) === 'true') return
+      sessionStorage.setItem(deliveryKey, 'true')
+    } catch { /* a private browser may block storage; the animation can still run */ }
+    setShowDelivery(true)
+  }, [loading, error, repos.length, deliveryKey])
 
   // Remember which project was opened last — this is what feeds "where you left off".
   function rememberOpen(repoName) {
@@ -46,6 +59,7 @@ export default function Projects({ auth }) {
         <h1 className="projects-title">My Projects</h1>
         <Link to="/new" className="pl-btn-primary projects-new">Add a project</Link>
       </div>
+      {showDelivery && <StorkDelivery variant="projects" count={repos.length} />}
       <p className="projects-subtitle">
         Your projects live in GitHub. Yourkly makes them easier to understand and continue.
       </p>
