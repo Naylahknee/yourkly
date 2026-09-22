@@ -141,7 +141,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* ── Auth (no shell) ─────────────────────────────────────── */}
-        <Route path="/auth/callback" element={<AuthCallback onSignIn={auth.signIn} />} />
+        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/profile-preview" element={<ProfilePreview auth={auth} />} />
 
         {/* ── Root ───────────────────────────────────────────────── */}
