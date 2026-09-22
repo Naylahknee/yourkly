@@ -23,6 +23,7 @@ import { activityEvents } from '../utils/activity'
 import { projectName } from '../utils/projectName'
 import { projectStatus } from '../utils/projectStatus'
 import { ownerOf } from '../utils/useProject'
+import StorkDelivery from '../components/StorkDelivery'
 
 const EXPLAINER_DISMISSED_KEY = 'plainly_home_explainer_dismissed'
 
@@ -131,6 +132,7 @@ export default function Home({ auth }) {
   if (!loading && !error && repos.length === 0) {
     return (
       <div className="screen-padded firstrun-screen">
+        <StorkDelivery variant="connected" />
         <h1 className="firstrun-title">Welcome{firstName ? `, ${firstName}` : ''}.</h1>
         <p className="firstrun-lead">
           You're signed in, and there's nothing in your account yet. That's the right
