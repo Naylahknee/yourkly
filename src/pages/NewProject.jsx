@@ -72,7 +72,7 @@ export default function NewProject({ auth }) {
   if (created) {
     const createdOwner = ownerOf(created, owner)
     return (
-      <div className="screen-padded newproject-screen">
+      <div className="screen-padded newproject-screen mobile-project-flow">
         <Link to="/projects" className="back-link">← My Projects</Link>
         <StorkDelivery variant="created" projectName={name.trim()} />
         <h1 className="newproject-title newproject-title--after-delivery">Your project is ready.</h1>
@@ -106,7 +106,7 @@ export default function NewProject({ auth }) {
 
   if (!source) {
     return (
-      <div className="screen-padded newproject-screen">
+      <div className="screen-padded newproject-screen mobile-project-flow">
         <Link to="/projects" className="back-link">← My Projects</Link>
         <h1 className="newproject-title">Add a project</h1>
         <p className="newproject-intro">
@@ -137,7 +137,7 @@ export default function NewProject({ auth }) {
 
   if (source === 'github') {
     return (
-      <div className="screen-padded newproject-screen">
+      <div className="screen-padded newproject-screen mobile-project-flow">
         <button type="button" className="back-link" onClick={() => setSource(null)}>← Back</button>
         <h1 className="newproject-title">Already on GitHub</h1>
         <p className="newproject-intro">
@@ -159,7 +159,7 @@ export default function NewProject({ auth }) {
   if (source !== 'new') {
     const option = SOURCE_OPTIONS.find(item => item.id === source)
     return (
-      <div className="screen-padded newproject-screen">
+      <div className="screen-padded newproject-screen mobile-project-flow">
         <button type="button" className="back-link" onClick={() => setSource(null)}>← Back</button>
         <h1 className="newproject-title">Bring in your {option?.label || 'project'}</h1>
         <p className="newproject-intro">{SOURCE_HELP[source]}</p>
@@ -180,7 +180,7 @@ export default function NewProject({ auth }) {
   }
 
   return (
-    <div className="screen-padded newproject-screen">
+    <div className="screen-padded newproject-screen mobile-project-flow">
       <button type="button" className="back-link" onClick={() => setSource(null)}>← Back</button>
       <h1 className="newproject-title">Create a new project</h1>
       <p className="newproject-intro">
