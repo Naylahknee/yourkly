@@ -4636,3 +4636,14 @@ a:hover { color: var(--purple-dark); }
 .mobile-flow--native .newproject-form > div { margin-bottom: 20px; }
 .mobile-projects .project-meta { display:block; margin-top:12px; font-size:12px; color:var(--grey); }
 @media (min-width: 721px) { .landing-cta-stack .landing-secondary-cta { max-width: 310px; } }
+
+/* Yourkly-native workspace */
+.native-tabs{display:flex;gap:8px;margin:28px 0 16px;flex-wrap:wrap}
+.native-file-list{display:grid;gap:1px;border:1px solid var(--grey-border);border-radius:12px;overflow:hidden}
+.native-file-row{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;background:#fff;border-bottom:1px solid var(--grey-light)}
+.native-file-row:last-child{border-bottom:0}.native-file-row small{display:block;color:var(--grey);margin-top:4px}
+.native-editor-backdrop{position:fixed;inset:0;background:rgba(28,27,34,.32);display:grid;place-items:center;padding:20px;z-index:100}
+.native-editor{width:min(760px,100%);max-height:90dvh;overflow:auto;background:#fff;border-radius:18px;padding:24px;box-shadow:0 20px 70px rgba(28,27,34,.2)}
+.native-editor .newproject-label{display:block;margin:18px 0 8px}.native-editor-text{width:100%;min-height:380px;resize:vertical;border:1px solid var(--grey-border);border-radius:10px;padding:14px;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);background:#fff}
+.native-editor-text:focus{outline:2px solid var(--purple);outline-offset:1px}
+@media(max-width:560px){.native-editor-backdrop{padding:0;align-items:end}.native-editor{border-radius:18px 18px 0 0;max-height:94dvh;padding:18px}.native-editor-text{min-height:46dvh}.native-file-row{padding:13px 12px}}
