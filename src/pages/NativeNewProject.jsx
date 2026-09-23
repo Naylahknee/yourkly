@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BrandWordmark from '../components/BrandWordmark'
 import { createNativeProject,saveNativeFile } from '../utils/nativeProjectStore'
-import { PROJECT_TYPES,aboutContent,starterFiles } from '../utils/projectConfiguration'
+import { PROJECT_TYPES,aboutContent,starterFiles,mitLicense } from '../utils/projectConfiguration'
 
 function slugify(value){return value.toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,64)}
 
@@ -14,6 +14,7 @@ export default function NativeNewProject(){
  function create(){
   const project=createNativeProject({name,slug:slugify(name),description,projectType,visibility,addAbout,ignoreTechnicalFiles,usage})
   if(addAbout)saveNativeFile(project.id,{name:'About this project.md',content:aboutContent(name,description,projectType)})
+  if(usage==='mit')saveNativeFile(project.id,{name:'Usage rules.txt',content:mitLicense('Project owner')})
   starterFiles(projectType).forEach(f=>saveNativeFile(project.id,{name:f.path,content:f.content}))
   navigate(`/native/p/${project.id}`)
  }
