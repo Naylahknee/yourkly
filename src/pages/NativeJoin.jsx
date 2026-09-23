@@ -1,36 +1,15 @@
-import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import BrandWordmark from '../components/BrandWordmark'
 
 export default function NativeJoin() {
-  const navigate = useNavigate()
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-
-  function continueNative(e) {
-    e.preventDefault()
-    const profile = { name: name.trim(), email: email.trim(), createdAt: new Date().toISOString() }
-    try {
-      localStorage.setItem('yourkly_native_profile', JSON.stringify(profile))
-      localStorage.setItem('yourkly_mode', 'native')
-    } catch {}
-    navigate('/native/new')
-  }
-
-  return (
-    <div className="welcome-page onboarding-page mobile-flow mobile-flow--native">
-      <div className="onboarding-shell">
-        <header className="landing-header"><BrandWordmark className="brand-wordmark--landing" /><Link className="landing-signin" to="/">Back</Link></header>
-        <div className="onboarding-progress"><span>YOURKLY · 1 OF 2</span><i><b /></i></div>
-        <h1>Create your Yourkly space</h1>
-        <p className="onboarding-lead">No GitHub account required. Start with Yourkly and connect GitHub later only if you want to.</p>
-        <form className="newproject-form" onSubmit={continueNative}>
-          <div><label className="newproject-label" htmlFor="native-name">What should we call you?</label><input id="native-name" className="newproject-input" value={name} onChange={e=>setName(e.target.value)} required autoFocus /></div>
-          <div><label className="newproject-label" htmlFor="native-email">Email</label><input id="native-email" className="newproject-input" type="email" value={email} onChange={e=>setEmail(e.target.value)} required /></div>
-          <p className="newproject-hint">This starts a local Yourkly workspace on this device while the secure cloud account layer is connected. Don't use it yet for your only copy of important files.</p>
-          <button className="landing-cta" type="submit">Continue</button>
-        </form>
-      </div>
-    </div>
-  )
+  const navigate=useNavigate()
+  return <div className="welcome-page onboarding-page mobile-flow mobile-flow--native"><div className="onboarding-shell">
+    <header className="landing-header"><BrandWordmark className="brand-wordmark--landing"/><Link className="landing-signin" to="/">Back</Link></header>
+    <div className="onboarding-progress"><span>YOURKLY PROJECTS</span><i><b className="onboarding-progress--two"/></i></div>
+    <h1>Use Yourkly without GitHub</h1>
+    <p className="onboarding-lead">Create projects, files, and Save Points without a GitHub account.</p>
+    <div className="onboarding-checklist"><div><strong>Your project</strong><small>Use normal project language, not GitHub vocabulary.</small></div><div><strong>Your versions</strong><small>Make Save Points before a big change and restore them later.</small></div><div><strong>Your exit</strong><small>Export the complete project whenever you want.</small></div></div>
+    <p className="newproject-hint">For this first native release, Yourkly keeps this workspace in this browser on this device. It does not upload these projects to GitHub.</p>
+    <button className="landing-cta" type="button" onClick={()=>{try{localStorage.setItem('yourkly_mode','native')}catch{};navigate('/native/projects')}}>Start with Yourkly</button>
+  </div></div>
 }

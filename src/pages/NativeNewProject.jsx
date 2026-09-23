@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BrandWordmark from '../components/BrandWordmark'
+import { createNativeProject } from '../utils/nativeProjectStore'
 
 function slugify(value) {
   return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 64)
@@ -13,13 +14,8 @@ export default function NativeNewProject() {
 
   function create(e) {
     e.preventDefault()
-    const project = { id: crypto.randomUUID(), name: name.trim(), slug: slugify(name), description: description.trim(), provider: 'yourkly', createdAt: new Date().toISOString(), versions: [] }
-    try {
-      const projects = JSON.parse(localStorage.getItem('yourkly_native_projects') || '[]')
-      projects.push(project)
-      localStorage.setItem('yourkly_native_projects', JSON.stringify(projects))
-    } catch {}
-    navigate('/native/projects')
+    const project = createNativeProject({ name, slug: slugify(name), description })
+    navigate(`/native/p/${project.id}`)
   }
 
   return <div className="welcome-page onboarding-page mobile-flow mobile-flow--native"><div className="onboarding-shell">
