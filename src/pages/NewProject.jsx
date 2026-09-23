@@ -268,7 +268,7 @@ export default function NewProject({ auth }) {
               className={`ai-tool${isPrivate ? ' ai-tool--on' : ''}`}
               onClick={() => setPrivate(true)}
             >
-              Only me
+              Only me / people I invite
             </button>
             <button
               type="button"
@@ -311,7 +311,7 @@ export default function NewProject({ auth }) {
           </>
         )}
 
-        {error && <p className="error-box">{error}</p>
+        {error && <p className="error-box">{error}</p>}
 
         <div className="newproject-actions">
           {createStep === 1 ? (
