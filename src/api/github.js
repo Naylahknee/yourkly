@@ -82,13 +82,13 @@ export async function getRepos(token) {
   return all
 }
 
-export async function createRepo(token, name, description) {
+export async function createRepo(token, name, description, options = {}) {
   const r = await fetch(`${API}/user/repos`, {
     method: 'POST',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     // description is what /new asks for in "what is it for?" — it shows on the
     // dashboard and goes into every AI handoff, so it has to reach GitHub.
-    body: JSON.stringify({ name, description: description || '', auto_init: true, private: true })
+    body: JSON.stringify({ name, description: description || '', auto_init: options.addAbout !== false, private: options.isPrivate !== false })
   })
   if (r.status === 422) throw new Error('A project with that name already exists. Try a different name.')
   if (!r.ok) throw new Error('Could not create the project. Try again.')
