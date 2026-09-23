@@ -9,10 +9,6 @@ import BrandWordmark from './components/BrandWordmark'
 // Auth pages (no shell)
 import AuthCallback from './pages/AuthCallback'
 import Welcome      from './pages/Welcome'
-import NativeJoin from './pages/NativeJoin'
-import NativeNewProject from './pages/NativeNewProject'
-import NativeProjects from './pages/NativeProjects'
-import NativeProjectHome from './pages/NativeProjectHome'
 
 // Global pages
 import Home        from './pages/Home'
