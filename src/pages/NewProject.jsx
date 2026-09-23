@@ -9,10 +9,11 @@
 
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import { createRepo, updateRepoSettings } from '../api/github'
+import { createRepo, createFileWithContent } from '../api/github'
 import { ownerOf } from '../utils/useProject'
 import StorkDelivery from '../components/StorkDelivery'
 import PlainLanguageHelp from '../components/PlainLanguageHelp'
+import { PROJECT_TYPES, IGNORE_DEFAULTS, aboutContent, starterFiles, mitLicense } from '../utils/projectConfiguration'
 
 const SOURCE_OPTIONS = [
   { id: 'lovable', label: 'Lovable' },
@@ -52,6 +53,11 @@ export default function NewProject({ auth }) {
   const [name, setName]           = useState('')
   const [description, setDesc]    = useState('')
   const [isPrivate, setPrivate]   = useState(true)
+  const [createStep, setCreateStep] = useState(1)
+  const [projectType, setProjectType] = useState('other')
+  const [addAbout, setAddAbout] = useState(true)
+  const [ignoreTechnicalFiles, setIgnoreTechnicalFiles] = useState(true)
+  const [usage, setUsage] = useState('private')
   const [saving, setSaving]       = useState(false)
   const [error, setError]         = useState(null)
   const [created, setCreated]     = useState(null)
@@ -76,12 +82,17 @@ export default function NewProject({ auth }) {
     setSaving(true)
     setError(null)
     try {
-      const repo = await createRepo(token, slug, description.trim())
-      // createRepo makes a private repository; only open it up if asked.
-      if (!isPrivate && owner) {
-        await updateRepoSettings(token, owner, repo.name, { private: false }).catch(() => {
-          setError('The project was created, but Yourkly could not make it public. You can change that later in Who Can See It.')
-        })
+      // Create the project container first. Yourkly then applies the plain-language
+      // configuration below; GitHub's README/.gitignore/license screen is never required.
+      const repo = await createRepo(token, slug, description.trim(), { addAbout: false, isPrivate })
+      const createdOwner = ownerOf(repo, owner)
+      const setupFiles = []
+      if (addAbout) setupFiles.push({ path: 'README.md', content: aboutContent(name.trim(), description.trim(), projectType), message: 'Added project information' })
+      if (ignoreTechnicalFiles) setupFiles.push({ path: '.gitignore', content: IGNORE_DEFAULTS[projectType] || IGNORE_DEFAULTS.other, message: 'Added safe file defaults' })
+      if (usage === 'mit') setupFiles.push({ path: 'LICENSE', content: mitLicense(user?.name || owner || 'Project owner'), message: 'Added usage rules' })
+      starterFiles(projectType).forEach(file => setupFiles.push({ ...file, message: 'Added starter file' }))
+      for (const file of setupFiles) {
+        await createFileWithContent(token, createdOwner, repo.name, file.path, file.content, file.message)
       }
       setCreated(repo)
       finishOnboarding()
@@ -217,7 +228,8 @@ export default function NewProject({ auth }) {
         Yourkly will create the project in your GitHub account and keep GitHub's technical setup out of your way.
       </p>
 
-      <form onSubmit={handleCreate} className="newproject-card">
+      <form onSubmit={handleCreate} className={`newproject-card config-flow config-flow--step-${createStep}`}>
+        <div className="config-step-indicator">STEP {createStep} OF 2</div>
         <div>
           <label className="newproject-label" htmlFor="np-name">What should it be called?</label>
           <div className="newproject-hint">Yourkly will create the matching project in your GitHub account.</div>
@@ -268,15 +280,49 @@ export default function NewProject({ auth }) {
           </div>
         </div>
 
-        {error && <p className="error-box">{error}</p>}
+        {createStep === 2 && (
+          <>
+            <div>
+              <div className="newproject-label">What kind of project is this?</div>
+              <div className="config-grid">
+                {PROJECT_TYPES.map(type => (
+                  <button key={type.id} type="button" className={`ai-tool${projectType === type.id ? ' ai-tool--on' : ''}`} onClick={() => setProjectType(type.id)}>
+                    <strong>{type.label}</strong><small>{type.description}</small>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <label className="config-toggle">
+              <span><strong>Add an About this project page</strong><small>Recommended. GitHub stores this as README.md behind the scenes.</small></span>
+              <input type="checkbox" checked={addAbout} onChange={e => setAddAbout(e.target.checked)} />
+            </label>
+            <label className="config-toggle">
+              <span><strong>Ignore technical clutter</strong><small>Recommended. Yourkly chooses safe defaults for temporary, secret, and generated files.</small></span>
+              <input type="checkbox" checked={ignoreTechnicalFiles} onChange={e => setIgnoreTechnicalFiles(e.target.checked)} />
+            </label>
+            <div>
+              <label className="newproject-label" htmlFor="np-usage">How can other people use this project?</label>
+              <select id="np-usage" className="newproject-input" value={usage} onChange={e => setUsage(e.target.value)}>
+                <option value="private">Don't give reuse permission</option>
+                <option value="mit">Allow reuse with credit (MIT)</option>
+              </select>
+              <div className="newproject-hint">You can leave this alone if you're not sure.</div>
+            </div>
+          </>
+        )}
+
+        {error && <p className="error-box">{error}</p>
 
         <div className="newproject-actions">
-          <button type="submit" className="pl-btn-primary" disabled={saving || !slug}>
-            {saving ? 'Creating…' : 'Create project'}
-          </button>
-          <button type="button" className="pl-btn" onClick={() => navigate('/projects')} disabled={saving}>
-            Cancel
-          </button>
+          {createStep === 1 ? (
+            <button type="button" className="pl-btn-primary" disabled={!slug} onClick={() => setCreateStep(2)}>Continue to setup</button>
+          ) : (
+            <>
+              <button type="submit" className="pl-btn-primary" disabled={saving || !slug}>{saving ? 'Creating…' : 'Create project'}</button>
+              <button type="button" className="pl-btn" onClick={() => setCreateStep(1)} disabled={saving}>Back</button>
+            </>
+          )}
+          <button type="button" className="pl-btn" onClick={() => navigate('/projects')} disabled={saving}>Cancel</button>
         </div>
       </form>
     </div>
