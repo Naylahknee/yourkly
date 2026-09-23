@@ -4399,3 +4399,28 @@ a:hover { color: var(--purple-dark); }
   .onboarding-options small { font-size: 12.5px; }
   .onboarding-checklist { padding: 16px; }
 }
+
+
+/* Desktop onboarding layout: keep the guided flow intentionally spacious and
+   centered on wide screens while preserving the same responsive component. */
+@media (min-width: 721px) {
+  .onboarding-shell { width: min(calc(100% - 96px), 1080px); }
+  .onboarding-shell .landing-header { width: 100%; }
+  .onboarding-shell > .onboarding-back,
+  .onboarding-shell > .onboarding-progress,
+  .onboarding-shell > h1,
+  .onboarding-shell > .onboarding-lead,
+  .onboarding-shell > .onboarding-options,
+  .onboarding-shell > .onboarding-checklist,
+  .onboarding-shell > .onboarding-github-cta,
+  .onboarding-shell > .text-button,
+  .onboarding-shell > .onboarding-return {
+    width: min(100%, 660px);
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .onboarding-shell > h1 { font-size: 48px; }
+  .onboarding-options { gap: 12px; }
+  .onboarding-options button { min-height: 74px; padding: 18px 54px 18px 20px; }
+  .onboarding-checklist { padding: 22px 24px; }
+}
