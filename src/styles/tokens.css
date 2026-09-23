@@ -4629,3 +4629,10 @@ a:hover { color: var(--purple-dark); }
   .mobile-projects .projects-empty-body { font-size: 13px; }
   .mobile-projects .projects-empty .pl-btn-primary { width: 100%; min-height: 50px; }
 }
+
+/* Native Yourkly foundation */
+.landing-secondary-cta { min-height: 48px; width: 100%; justify-content: center; margin-top: 8px; }
+.mobile-flow--native .newproject-form { margin-top: 28px; }
+.mobile-flow--native .newproject-form > div { margin-bottom: 20px; }
+.mobile-projects .project-meta { display:block; margin-top:12px; font-size:12px; color:var(--grey); }
+@media (min-width: 721px) { .landing-cta-stack .landing-secondary-cta { max-width: 310px; } }

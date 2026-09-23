@@ -14,8 +14,10 @@
 import { useEffect, useState } from 'react'
 import BrandWordmark from '../components/BrandWordmark'
 import storkUrl from '../assets/brand/yourkly-stork.png'
+import { useNavigate } from 'react-router-dom'
 
 export default function Welcome() {
+  const navigate = useNavigate()
   const clientId = import.meta.env.VITE_GITHUB_CLIENT_ID
   const missingConfig = !clientId
 
@@ -109,8 +111,8 @@ export default function Welcome() {
             <div><strong>Work in plain language</strong><small>No repositories, commits, branches, or GitHub setup.</small></div>
             <div><strong>Export when you want</strong><small>You are not locked in. GitHub can be connected later if you choose.</small></div>
           </div>
-          <div className="error-box">Yourkly-managed project storage is being added next. We won't pretend this is available until the storage and account layer are live.</div>
-          <button type="button" className="landing-cta" disabled>Start with Yourkly — coming next</button>
+          <button type="button" className="landing-cta" onClick={() => navigate('/join')}>Start with Yourkly</button>
+          <button type="button" className="text-button" onClick={startSignIn}>I'd rather connect GitHub</button>
         </div>
       </div>
     )
@@ -181,8 +183,9 @@ export default function Welcome() {
                 <p className="error-box">Configuration missing — set <code>VITE_GITHUB_CLIENT_ID</code> to enable sign-in.</p>
               ) : (
                 <div className="landing-cta-stack">
-                  <button type="button" onClick={startSignIn} className="landing-cta" disabled={signingIn}>
-                    {signingIn ? 'Opening GitHub…' : 'Continue with GitHub'}
+                  <button type="button" className="landing-cta" onClick={() => setOnboarding('native')}>Continue with Yourkly</button>
+                  <button type="button" onClick={startSignIn} className="pl-btn landing-secondary-cta" disabled={signingIn}>
+                    {signingIn ? 'Opening GitHub…' : 'Connect GitHub'}
                   </button>
                   <span>No new password. Your GitHub account is your login.</span>
                   <span>
