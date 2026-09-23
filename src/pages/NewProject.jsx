@@ -12,6 +12,7 @@ import { useNavigate, Link } from 'react-router-dom'
 import { createRepo, updateRepoSettings } from '../api/github'
 import { ownerOf } from '../utils/useProject'
 import StorkDelivery from '../components/StorkDelivery'
+import PlainLanguageHelp from '../components/PlainLanguageHelp'
 
 const SOURCE_OPTIONS = [
   { id: 'lovable', label: 'Lovable' },
@@ -144,7 +145,8 @@ export default function NewProject({ auth }) {
         <div className="newproject-card">
           <div>
             <div className="newproject-label">Where is your project right now?</div>
-            <div className="newproject-hint">You do not need to know what a repository is.</div>
+            <div className="newproject-hint">A project is the project itself — its files plus the history of how they changed. GitHub calls that a repository. You do not need to use that word in Yourkly.</div>
+            <PlainLanguageHelp compact />
           </div>
           <div className="newproject-choices">
             {SOURCE_OPTIONS.map(option => (
@@ -195,7 +197,7 @@ export default function NewProject({ auth }) {
           <div>
             <div className="newproject-label">Why GitHub is part of this</div>
             <div className="newproject-hint">
-              GitHub keeps the actual project files and version history. Yourkly reads that information and explains it in plain language. Your code stays in your GitHub account.
+              GitHub keeps the project files and version history underneath. Yourkly gives you the project in plain language. You do not need to manage repositories, commits, branches, README files, or .gitignore settings here.
             </div>
           </div>
           <div className="newproject-actions">
@@ -246,7 +248,7 @@ export default function NewProject({ auth }) {
         </div>
 
         <div>
-          <div className="newproject-label">Who should be able to see this project's files?</div>
+          <div className="newproject-label">Who can see this project?</div>
           <div className="newproject-hint">You can change this later.</div>
           <div className="newproject-choices">
             <button

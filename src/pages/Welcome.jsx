@@ -156,9 +156,9 @@ export default function Welcome() {
         <main>
           <section className="landing-hero">
             <div className="landing-hero-copy">
-              <h1>Yourkly — GitHub projects, made clear</h1>
+              <h1>Your projects, made clear</h1>
               <p>
-                Know what changed, what it means, and exactly what to do next — without having to understand developer language.
+                Know what changed, what it means, and exactly what to do next — whether your project is kept with Yourkly or GitHub.
               </p>
 
               {authError === 'state_mismatch' ? (
@@ -233,12 +233,12 @@ export default function Welcome() {
 
           <button type="button" className="landing-start-guide" onClick={() => setOnboarding('choose')}>Not sure where to start? We'll guide you →</button>
 
-          <section className="landing-trust">Your files stay in GitHub. Yourkly doesn't copy your projects.</section>
+          <section className="landing-trust">Choose where your project lives: keep it with Yourkly, or connect GitHub. Either way, Yourkly uses plain language.</section>
 
           <section className="landing-steps">
             <h2>Three steps, then you're working.</h2>
             <div className="landing-step-grid">
-              <article><span>01</span><h3>Connect GitHub</h3><p>Already have GitHub? Connect it. New to GitHub? Create a free account there first, then come right back.</p></article>
+              <article><span>01</span><h3>Choose where it lives</h3><p>Keep your project with Yourkly, or connect GitHub if you already use it.</p></article>
               <article><span>02</span><h3>Yourkly explains your project</h3><p>Where you left off, what changed, and what to do next — in plain words.</p></article>
               <article><span>03</span><h3>Continue anywhere</h3><p>Pick up the work in Yourkly, Lovable, ChatGPT, or Cursor.</p></article>
             </div>

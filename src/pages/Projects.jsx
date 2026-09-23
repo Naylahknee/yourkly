@@ -22,6 +22,7 @@ import { projectName } from '../utils/projectName'
 import { projectStatus } from '../utils/projectStatus'
 import { ownerOf } from '../utils/useProject'
 import StorkDelivery from '../components/StorkDelivery'
+import PlainLanguageHelp from '../components/PlainLanguageHelp'
 
 export default function Projects({ auth }) {
   const owner = auth.user?.login
@@ -61,10 +62,12 @@ export default function Projects({ auth }) {
       </div>
       {showDelivery && <StorkDelivery variant="projects" count={repos.length} />}
       <p className="projects-subtitle">
-        Your projects live in GitHub. Yourkly makes them easier to understand and continue.
+        These are your projects. If a project is kept in GitHub, Yourkly translates the technical parts into plain language.
       </p>
 
       {/* A filtered list presented as the whole list is a false statement. */}
+      <PlainLanguageHelp compact />
+
       {!loading && !error && allProjects.length > 0 && (
         <p className="projects-count">
           {hiddenCount > 0
@@ -120,7 +123,7 @@ export default function Projects({ auth }) {
                     <span className="projects-card-desc">{repo.description}</span>
                   )}
                   <span className="projects-card-meta">{meta.join(' · ')}</span>
-                  <span className="projects-card-url">github.com/{owner}/{repo.name}</span>
+                  <span className="projects-card-url">Kept in GitHub</span>
                 </span>
                 <span className="projects-card-open">Open project</span>
               </Link>

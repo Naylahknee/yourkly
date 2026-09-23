@@ -4647,3 +4647,12 @@ a:hover { color: var(--purple-dark); }
 .native-editor .newproject-label{display:block;margin:18px 0 8px}.native-editor-text{width:100%;min-height:380px;resize:vertical;border:1px solid var(--grey-border);border-radius:10px;padding:14px;font:14px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink);background:#fff}
 .native-editor-text:focus{outline:2px solid var(--purple);outline-offset:1px}
 @media(max-width:560px){.native-editor-backdrop{padding:0;align-items:end}.native-editor{border-radius:18px 18px 0 0;max-height:94dvh;padding:18px}.native-editor-text{min-height:46dvh}.native-file-row{padding:13px 12px}}
+
+/* Canonical plain-language guide */
+.plain-help-trigger{border:0;background:transparent;color:var(--purple-dark);font:inherit;font-size:13px;font-weight:650;padding:6px 0;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.plain-help{margin:18px 0;border:1px solid var(--grey-border);border-radius:14px;background:#fff;padding:18px}
+.plain-help-head{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}.plain-help-head p{margin:4px 0 0;color:var(--grey);font-size:13px}
+.plain-help-list{margin-top:14px;border-top:1px solid var(--grey-light)}.plain-help-row{display:grid;grid-template-columns:minmax(180px,.7fr) 1fr;gap:18px;padding:13px 0;border-bottom:1px solid var(--grey-light)}
+.plain-help-row strong,.plain-help-row small{display:block}.plain-help-row small{margin-top:3px;color:var(--grey);font-size:12px}.plain-help-row p{margin:0;color:var(--grey);font-size:13px;line-height:1.45}
+.plain-help--compact{margin:8px 0 0}
+@media(max-width:560px){.plain-help-row{grid-template-columns:1fr;gap:5px}.plain-help{padding:14px}}
