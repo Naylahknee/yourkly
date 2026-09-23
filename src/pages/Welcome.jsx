@@ -33,7 +33,6 @@ export default function Welcome() {
   function chooseStart(source) {
     rememberStart(source)
     if (source === 'github') startSignIn()
-    else if (source === 'yourkly') setOnboarding('native')
     else setOnboarding('github')
   }
 
@@ -85,34 +84,12 @@ export default function Welcome() {
           <h1>Where is your project<br />right now?</h1>
           <p className="onboarding-lead">Tell us where you're starting from. We'll guide you from here.</p>
           <div className="onboarding-options">
-            <button onClick={() => chooseStart('yourkly')}><strong>I don't want to use GitHub</strong><small>Keep my projects with Yourkly instead.</small><b>›</b></button>
             <button onClick={() => chooseStart('github')}><strong>I already have a GitHub account</strong><small>Connect my existing account.</small><b>›</b></button>
             <button onClick={() => chooseStart('new')}><strong>I don't have a GitHub account yet</strong><small>I'm new and want to create a free account.</small><b>›</b></button>
             <button onClick={() => chooseStart('computer')}><strong>My project is on my computer</strong><small>We'll help you get it into GitHub.</small><b>›</b></button>
             <button onClick={() => chooseStart('builder')}><strong>It's on Lovable, Replit, Bolt, or Cursor</strong><small>We'll remember that and continue from there.</small><b>›</b></button>
             <button onClick={() => chooseStart('other')}><strong>It's somewhere else</strong><small>We'll help you connect the pieces.</small><b>›</b></button>
           </div>
-        </div>
-      </div>
-    )
-  }
-
-  if (onboarding === 'native') {
-    return (
-      <div className="welcome-page onboarding-page mobile-flow mobile-flow--native">
-        <div className="onboarding-shell">
-          <header className="landing-header"><BrandWordmark className="brand-wordmark--landing" /><button type="button" className="landing-signin" onClick={startSignIn}>Sign in</button></header>
-          <button type="button" className="back-link onboarding-back" onClick={() => setOnboarding('choose')}>← Back</button>
-          <div className="onboarding-progress"><span>YOURKLY PROJECTS</span><i><b className="onboarding-progress--two" /></i></div>
-          <h1>Use Yourkly without GitHub</h1>
-          <p className="onboarding-lead">Yourkly can keep your project, versions, and changes without asking you to create or connect a GitHub account.</p>
-          <div className="onboarding-checklist">
-            <div><strong>Keep it with Yourkly</strong><small>Your files and version history stay in your Yourkly project.</small></div>
-            <div><strong>Work in plain language</strong><small>No repositories, commits, branches, or GitHub setup.</small></div>
-            <div><strong>Export when you want</strong><small>You are not locked in. GitHub can be connected later if you choose.</small></div>
-          </div>
-          <button type="button" className="landing-cta" onClick={() => navigate('/join')}>Start with Yourkly</button>
-          <button type="button" className="text-button" onClick={startSignIn}>I'd rather connect GitHub</button>
         </div>
       </div>
     )
@@ -156,9 +133,9 @@ export default function Welcome() {
         <main>
           <section className="landing-hero">
             <div className="landing-hero-copy">
-              <h1>Your projects, made clear</h1>
+              <h1>GitHub projects, made clear</h1>
               <p>
-                Know what changed, what it means, and exactly what to do next — whether your project is kept with Yourkly or GitHub.
+                Your project stays in GitHub. Yourkly translates what changed, what it means, and what to do next — without making you learn developer language.
               </p>
 
               {authError === 'state_mismatch' ? (
@@ -183,10 +160,7 @@ export default function Welcome() {
                 <p className="error-box">Configuration missing — set <code>VITE_GITHUB_CLIENT_ID</code> to enable sign-in.</p>
               ) : (
                 <div className="landing-cta-stack">
-                  <button type="button" className="landing-cta" onClick={() => setOnboarding('native')}>Continue with Yourkly</button>
-                  <button type="button" onClick={startSignIn} className="pl-btn landing-secondary-cta" disabled={signingIn}>
-                    {signingIn ? 'Opening GitHub…' : 'Connect GitHub'}
-                  </button>
+                  <button type="button" className="landing-cta" onClick={startSignIn} disabled={signingIn}>{signingIn ? 'Opening GitHub…' : 'Continue with GitHub'}</button>
                   <span>No new password. Your GitHub account is your login.</span>
                   <span>
                     Don't have GitHub yet?{' '}
@@ -233,12 +207,12 @@ export default function Welcome() {
 
           <button type="button" className="landing-start-guide" onClick={() => setOnboarding('choose')}>Not sure where to start? We'll guide you →</button>
 
-          <section className="landing-trust">Choose where your project lives: keep it with Yourkly, or connect GitHub. Either way, Yourkly uses plain language.</section>
+          <section className="landing-trust">Your files stay in GitHub. Yourkly doesn’t copy your projects — it makes GitHub understandable.</section>
 
           <section className="landing-steps">
             <h2>Three steps, then you're working.</h2>
             <div className="landing-step-grid">
-              <article><span>01</span><h3>Choose where it lives</h3><p>Keep your project with Yourkly, or connect GitHub if you already use it.</p></article>
+              <article><span>01</span><h3>Connect GitHub</h3><p>Already have GitHub? Connect it. New to GitHub? Create a free account there first, then come right back.</p></article>
               <article><span>02</span><h3>Yourkly explains your project</h3><p>Where you left off, what changed, and what to do next — in plain words.</p></article>
               <article><span>03</span><h3>Continue anywhere</h3><p>Pick up the work in Yourkly, Lovable, ChatGPT, or Cursor.</p></article>
             </div>
