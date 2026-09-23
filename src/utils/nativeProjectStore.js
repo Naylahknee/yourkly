@@ -8,7 +8,7 @@ function write(key, value) { localStorage.setItem(key, JSON.stringify(value)); r
 export function nativeProjects(){ return read(PROJECTS) }
 export function nativeProject(id){ return nativeProjects().find(p=>p.id===id)||null }
 export function createNativeProject(data){
-  const project={id:crypto.randomUUID(),name:data.name.trim(),slug:data.slug,description:data.description?.trim()||'',provider:'yourkly',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}
+  const project={id:crypto.randomUUID(),name:data.name.trim(),slug:data.slug,description:data.description?.trim()||'',provider:'yourkly',visibility:data.visibility||'private',projectType:data.projectType||'other',addAbout:data.addAbout!==false,ignoreTechnicalFiles:data.ignoreTechnicalFiles!==false,usage:data.usage||'private',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()}
   write(PROJECTS,[...nativeProjects(),project]); return project
 }
 export function nativeFiles(projectId){ return read(FILES).filter(f=>f.projectId===projectId) }
