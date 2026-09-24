@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import BrandWordmark from '../components/BrandWordmark'
 import { createNativeProject,saveNativeFile } from '../utils/nativeProjectStore'
 import { PROJECT_TYPES,aboutContent,starterFiles,mitLicense } from '../utils/projectConfiguration'
@@ -19,7 +19,7 @@ export default function NativeNewProject(){
   navigate(`/native/p/${project.id}`)
  }
  return <div className="welcome-page onboarding-page mobile-flow mobile-flow--native"><div className="onboarding-shell">
-  <header className="landing-header"><BrandWordmark className="brand-wordmark--landing"/></header>
+  <header className="landing-header"><BrandWordmark className="brand-wordmark--landing"/><Link className="pl-btn" to="/native/projects">My Projects</Link></header>
   <div className="onboarding-progress"><span>NEW PROJECT · {step} OF 2</span><i><b className={step===2?'onboarding-progress--two':''}/></i></div>
   {step===1?<><h1>Make your project</h1><p className="onboarding-lead">A project is simply the thing you're building. Give it a name you recognize and tell Yourkly, in your own words, what it is.</p><div className="translation-note"><strong>No technical description needed.</strong><span>“A website for my homeschool group” is enough. Yourkly uses this description to keep the rest of the workspace understandable.</span></div>
    <div className="newproject-form"><div><label className="newproject-label">What should it be called?</label><input className="newproject-input" value={name} onChange={e=>setName(e.target.value)} required autoFocus/></div><div><label className="newproject-label">What are you building?</label><input className="newproject-input" value={description} onChange={e=>setDescription(e.target.value)} placeholder="One sentence is enough"/></div><button className="landing-cta" disabled={!name.trim()} onClick={()=>setStep(2)}>Continue</button></div>

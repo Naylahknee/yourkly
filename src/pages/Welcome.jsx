@@ -33,7 +33,10 @@ export default function Welcome() {
   function chooseStart(source) {
     rememberStart(source)
     if (source === 'github') startSignIn()
-    else if (source === 'yourkly') setOnboarding('native')
+    else if (source === 'yourkly') {
+      try { localStorage.setItem('yourkly_mode', 'native') } catch { /* continue without persistence */ }
+      navigate('/native/projects')
+    }
     else setOnboarding('github')
   }
 
@@ -179,24 +182,21 @@ export default function Welcome() {
                 </p>
               )}
 
-              {missingConfig ? (
-                <p className="error-box">Configuration missing — set <code>VITE_GITHUB_CLIENT_ID</code> to enable sign-in.</p>
-              ) : (
-                <div className="landing-cta-stack">
-                  <button type="button" className="landing-cta" onClick={() => setOnboarding('native')}>Continue with Yourkly</button>
-                  <button type="button" onClick={startSignIn} className="pl-btn landing-secondary-cta" disabled={signingIn}>
-                    {signingIn ? 'Opening GitHub…' : 'Connect GitHub'}
+              {missingConfig && <p className="error-box">Configuration missing — set <code>VITE_GITHUB_CLIENT_ID</code> to enable GitHub sign-in.</p>}
+              <div className="landing-cta-stack">
+                <button type="button" className="landing-cta" onClick={() => chooseStart('yourkly')}>Continue with Yourkly</button>
+                <button type="button" onClick={startSignIn} className="pl-btn landing-secondary-cta" disabled={missingConfig || signingIn}>
+                  {signingIn ? 'Opening GitHub…' : 'Connect GitHub'}
+                </button>
+                <span>No new password. Your GitHub account is your login.</span>
+                <span>
+                  Don't have GitHub yet?{' '}
+                  <button type="button" className="text-link text-button-inline" onClick={() => setOnboarding('choose')}>
+                    Create a free GitHub account
                   </button>
-                  <span>No new password. Your GitHub account is your login.</span>
-                  <span>
-                    Don't have GitHub yet?{' '}
-                    <button type="button" className="text-link text-button-inline" onClick={() => setOnboarding('choose')}>
-                      Create a free GitHub account
-                    </button>
-                  </span>
-                  <span>Your projects stay in your GitHub account. Yourkly makes them easier to understand.</span>
-                </div>
-              )}
+                </span>
+                <span>Your projects stay in your GitHub account. Yourkly makes them easier to understand.</span>
+              </div>
             </div>
 
             <div className="landing-product-wrap">
