@@ -4632,8 +4632,8 @@ a:hover { color: var(--purple-dark); }
 
 /* Native Yourkly foundation */
 .landing-secondary-cta { min-height: 48px; width: 100%; justify-content: center; margin-top: 8px; }
-.mobile-flow--native .newproject-form { margin-top: 28px; }
-.mobile-flow--native .newproject-form > div { margin-bottom: 20px; }
+.mobile-flow--native .newproject-form { margin-top: 0; }
+.mobile-flow--native .newproject-form > div { margin-bottom: 24px; }
 .mobile-projects .project-meta { display:block; margin-top:12px; font-size:12px; color:var(--grey); }
 @media (min-width: 721px) { .landing-cta-stack .landing-secondary-cta { max-width: 310px; } }
 
@@ -4712,4 +4712,54 @@ a:hover { color: var(--purple-dark); }
   .translation-strip > div { border-right: 0; border-bottom: 1px solid var(--grey-light); }
   .translation-strip > div:last-child { border-bottom: 0; }
   .native-empty-explainer { padding: 24px 20px; }
+}
+
+/* Native project setup: the approved spacious direction, scoped to /native/new.
+   Existing brand colors and interaction states remain inherited. */
+.mobile-flow--native .onboarding-shell {
+  width: min(680px, calc(100% - 40px));
+  min-height: 0;
+  margin: 0 auto;
+  padding: 0 0 48px;
+  display: block;
+}
+.mobile-flow--native .landing-header {
+  height: 80px;
+  min-height: 80px;
+  padding: 0;
+  margin: 0 0 64px;
+  gap: 16px;
+}
+.mobile-flow--native .onboarding-progress { margin: 0 0 20px; }
+.mobile-flow--native .onboarding-shell h1 {
+  max-width: none;
+  margin: 0 0 12px;
+  font-size: 40px;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -.025em;
+}
+.mobile-flow--native .onboarding-lead {
+  max-width: 60ch;
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.mobile-flow--native .translation-note { margin: 0 0 28px; padding: 20px; gap: 8px; }
+.mobile-flow--native .newproject-form .newproject-label { margin: 0 0 8px; font-weight: 500; }
+.mobile-flow--native .newproject-input { min-height: 56px; padding: 14px 16px; font-size: 16px; }
+.mobile-flow--native .newproject-form > div:last-of-type { margin-bottom: 28px; }
+.mobile-flow--native .landing-cta {
+  min-height: 50px;
+  padding: 14px 24px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+  box-shadow: none;
+}
+.mobile-flow--native .landing-cta:hover { box-shadow: none; transform: none; }
+.mobile-flow--native .newproject-card { box-shadow: none; }
+@media (max-width: 720px) {
+  .mobile-flow--native .landing-header { margin-bottom: 32px; }
+  .mobile-flow--native .onboarding-shell h1 { font-size: 32px; }
 }

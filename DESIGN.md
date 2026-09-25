@@ -12,6 +12,34 @@ pre-redesign system — this file supersedes it for anything they disagree on.
 
 ---
 
+## Approved refinement: Yourkly project setup (2026-09-25)
+
+This section overrides older typography and spacing rules for `/native/new`.
+Use the supplied Meta screenshots for visual restraint, hierarchy and proportions;
+keep Yourkly's exact existing color palette, wordmark and stork identity. Do not
+copy Meta's colors or add content, decorative badges, icons or features.
+
+- Use regular/medium large headings, purposeful whitespace, flat surfaces and
+  consistent rounded corners. Rounded cards and buttons are allowed; avoid nested
+  containers, heavy shadows, decorative glow and competing accents.
+- The native setup shell is 680px maximum with 20px minimum side margins.
+- Header: 80px tall, vertically centered; 64px gap below on desktop and 32px at
+  widths up to 720px. Use normal document flow, never vertical centering.
+- Heading: 40px desktop, 32px mobile, weight 500, line-height 1.15. Step indicator
+  to heading: 20px; heading to introduction: 12px; introduction to guidance: 24px.
+- Guidance: 20px padding, followed by 28px before the form. Labels sit 8px above
+  inputs; field groups have 24px gaps. Inputs have a 56px minimum height and
+  16px horizontal padding. Retain visible keyboard focus.
+- Main action: 28px after the last field, 50px minimum height, weight 500, no
+  shadow or hover lift. Retain existing colors and disabled/enabled behavior.
+- Keep at least 48px below content; let short screens scroll naturally.
+- These are approved Yourkly specifications, not measured Meta CSS. The zoomed-out
+  Help Center screenshot is a composition reference only.
+- Implement and review this page before extending the direction to other pages.
+  Authentication, routing, saved data, project configuration and copy stay intact.
+
+---
+
 ## 1. What this app is for
 
 Plainly sits on top of a GitHub account and does one job: tell you where you left off,
