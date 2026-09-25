@@ -12,6 +12,41 @@ pre-redesign system — this file supersedes it for anything they disagree on.
 
 ---
 
+## Approved refinement: Yourkly project setup (2026-09-25)
+
+This section overrides older typography and spacing rules for `/native/new`.
+Use the supplied Meta screenshots for visual restraint, hierarchy and proportions;
+keep Yourkly's exact existing color palette, wordmark and stork identity. Do not
+copy Meta's colors or add content, decorative badges, icons or features.
+
+- Use regular/medium large headings, purposeful whitespace, flat surfaces and
+  consistent rounded corners. Rounded cards and buttons are allowed; avoid nested
+  containers, heavy shadows, decorative glow and competing accents.
+- The native setup shell is 680px maximum with 20px minimum side margins.
+- Header: 80px tall with a centered 1200px maximum inner width. Keep it sticky
+  at the top with Home and My Projects as plain text links. On scroll beyond 8px,
+  use the existing white surface at 82% opacity with a 16px backdrop blur; retain
+  an opaque white fallback when blur is unavailable. Mobile margins are 20px.
+  Place the form 64px below on desktop and 32px at widths up to 720px.
+- Heading: 40px desktop, 32px mobile, weight 500, line-height 1.15. Step indicator
+  to heading: 20px; heading to introduction: 12px; introduction to guidance: 24px.
+- Guidance: 20px padding, followed by 28px before the form. Labels sit 8px above
+  inputs; field groups have 24px gaps. Inputs have a 56px minimum height and
+  16px horizontal padding. Retain visible keyboard focus.
+- Main action: 28px after the last field, 50px minimum height, weight 500, no
+  shadow or hover lift. Retain existing colors and disabled/enabled behavior.
+- Buttons, inputs and setup choices use 8px corners rather than pill shapes.
+  Setup groups have 28px gaps; choices have 12px gaps and 16px padding. Keep
+  configuration directly on the page instead of inside an additional card.
+  Selected choices keep their existing purple fill and expose aria-pressed.
+- Keep at least 48px below content; let short screens scroll naturally.
+- These are approved Yourkly specifications, not measured Meta CSS. The zoomed-out
+  Help Center screenshot is a composition reference only.
+- Implement and review this page before extending the direction to other pages.
+  Authentication, routing, saved data, project configuration and copy stay intact.
+
+---
+
 ## 1. What this app is for
 
 Plainly sits on top of a GitHub account and does one job: tell you where you left off,
@@ -119,7 +154,9 @@ The mobile rules live at the **end of `tokens.css`**, the last stylesheet `main.
 A media query carries no extra specificity, so an override only wins by loading after the
 rule it overrides. Half of them did nothing when they sat in `index.css`.
 
-**There is exactly one navigation in the app**, `AppShell`. No page renders its own nav.
+**Authenticated GitHub pages use one navigation**, `AppShell`; do not duplicate it.
+The standalone `/native/new` page uses `NativeHeader` instead, with links to Home
+and My Projects. This header is never rendered inside `AppShell`.
 This is worth stating because it was broken once: two screens kept an old sidebar and the
 app showed two side by side.
 
