@@ -4720,15 +4720,8 @@ a:hover { color: var(--purple-dark); }
   width: min(680px, calc(100% - 40px));
   min-height: 0;
   margin: 0 auto;
-  padding: 0 0 48px;
+  padding: 64px 0 48px;
   display: block;
-}
-.mobile-flow--native .landing-header {
-  height: 80px;
-  min-height: 80px;
-  padding: 0;
-  margin: 0 0 64px;
-  gap: 16px;
 }
 .mobile-flow--native .onboarding-progress { margin: 0 0 20px; }
 .mobile-flow--native .onboarding-shell h1 {
@@ -4760,6 +4753,84 @@ a:hover { color: var(--purple-dark); }
 .mobile-flow--native .landing-cta:hover { box-shadow: none; transform: none; }
 .mobile-flow--native .newproject-card { box-shadow: none; }
 @media (max-width: 720px) {
-  .mobile-flow--native .landing-header { margin-bottom: 32px; }
+  .mobile-flow--native .onboarding-shell { padding-top: 32px; }
   .mobile-flow--native .onboarding-shell h1 { font-size: 32px; }
+}
+
+
+/* The header is outside the narrow form so it spans the viewport while sticky. */
+.native-menu-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: #fff;
+  border-bottom: 1px solid transparent;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+.native-menu-header--scrolled { border-bottom-color: var(--grey-light); }
+@supports ((backdrop-filter: blur(16px)) or (-webkit-backdrop-filter: blur(16px))) {
+  .native-menu-header--scrolled {
+    background: rgb(255 255 255 / 82%);
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+  }
+}
+.native-menu-inner {
+  width: min(1200px, calc(100% - 96px));
+  min-height: 80px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.native-menu-brand { display: inline-flex; flex-shrink: 0; align-items: center; }
+.native-menu-inner nav { display: flex; align-items: center; gap: 32px; }
+.native-menu-inner nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--ink);
+  font: 500 16px/1.4 var(--font);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.native-menu-inner nav a:hover { color: var(--purple-dark); }
+.native-menu-header a:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: 4px; }
+.mobile-flow--native :is(.landing-cta, .newproject-input, .ai-tool) { border-radius: 8px; }
+.mobile-flow--native .config-card {
+  gap: 28px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.mobile-flow--native .config-card .newproject-label { font-weight: 500; margin-bottom: 8px; }
+.mobile-flow--native .config-card .newproject-hint { margin-bottom: 12px; }
+.mobile-flow--native .config-grid { gap: 12px; margin-top: 0; }
+.mobile-flow--native .config-grid .ai-tool {
+  min-height: 84px;
+  padding: 16px;
+  gap: 6px;
+  line-height: 1.4;
+}
+.mobile-flow--native .config-grid .ai-tool strong { font-weight: 500; }
+.mobile-flow--native .config-grid .ai-tool--on small { color: inherit; }
+.mobile-flow--native .newproject-choices { gap: 12px; }
+.mobile-flow--native .newproject-choices .ai-tool { min-height: 48px; padding: 12px 16px; font-weight: 500; line-height: 1.4; }
+.mobile-flow--native .config-card > .landing-cta { justify-self: start; }
+.mobile-flow--native .back-link { margin: 0 0 20px; min-height: 44px; }
+@media (max-width: 720px) {
+  .native-menu-inner { width: calc(100% - 40px); gap: 16px; }
+  .native-menu-inner nav { gap: 20px; }
+  .native-menu-inner nav a { font-size: 14px; }
+  .mobile-flow--native .newproject-choices { display: grid; grid-template-columns: 1fr; }
+}
+@media (max-width: 360px) {
+  .native-menu-inner { gap: 10px; }
+  .native-menu-inner nav { gap: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .native-menu-header { transition: none; }
 }

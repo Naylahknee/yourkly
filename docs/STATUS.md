@@ -7,7 +7,8 @@ every substantial task. See `AGENTS.md` for the update protocol.
 
 ## Native project setup spacing — 2026-09-25
 
-Implemented locally on `fix/native-project-spacing`, based on main `7eaecc2`.
+Published for review in PR #19 on `fix/native-project-spacing`, based on main `7eaecc2`.
+Follow-up: owner requested adjusted pill buttons and a transparent scrolling menu header.
 
 - Scoped `/native/new` CSS removes stacked header padding, sets a 680px maximum
   form width, 80px header, 64px desktop / 32px mobile header gap, and 48px bottom space.
@@ -15,12 +16,19 @@ Implemented locally on `fix/native-project-spacing`, based on main `7eaecc2`.
   field gaps, 56px inputs, and 50px primary buttons without glow or hover lift.
 - Documents the approved Meta-reference direction in root DESIGN.md, retaining
   all existing colors, wording, routing, project creation and authentication.
-- Validation: `npm run build` passed (119 modules); existing >500kB bundle warning.
-  `git diff --check` passed. JSX and application logic are unchanged.
+- Added NativeHeader to `/native/new`: Home/My Projects text links, sticky placement,
+  translucent existing white surface and blur on scroll, and an opaque fallback.
+- Setup choices, inputs and actions use 8px corners; configuration groups use
+  consistent gaps without an extra enclosing card. Selected choices expose aria-pressed.
+- Validation: `npm run build` passed (120 modules); existing >500kB bundle warning.
+  `git diff --check` passed. Imports and parent wiring reviewed; project creation,
+  authentication, routes and saved-data logic are unchanged.
 - Visual verification incomplete: agent-browser is unavailable; the installed
-  Playwright package has no Chromium executable. Desktop/mobile rendering and
+  Playwright package has no Chromium executable, and a browser download failed.
+  Desktop/mobile rendering, sticky-header behavior and
   interactive verification must be completed in a browser before release.
-- No new dependencies or color definitions. Potential risk: unverified visual
+- No new dependencies or palette colors; header opacity reuses existing white.
+  Potential risk: unverified visual
   interaction with inherited styles, especially the second setup step.
 - Owner authorized committing, pushing and opening a pull request on 2026-09-25.
   Merge and deployment remain pending.

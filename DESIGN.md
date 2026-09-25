@@ -23,8 +23,11 @@ copy Meta's colors or add content, decorative badges, icons or features.
   consistent rounded corners. Rounded cards and buttons are allowed; avoid nested
   containers, heavy shadows, decorative glow and competing accents.
 - The native setup shell is 680px maximum with 20px minimum side margins.
-- Header: 80px tall, vertically centered; 64px gap below on desktop and 32px at
-  widths up to 720px. Use normal document flow, never vertical centering.
+- Header: 80px tall with a centered 1200px maximum inner width. Keep it sticky
+  at the top with Home and My Projects as plain text links. On scroll beyond 8px,
+  use the existing white surface at 82% opacity with a 16px backdrop blur; retain
+  an opaque white fallback when blur is unavailable. Mobile margins are 20px.
+  Place the form 64px below on desktop and 32px at widths up to 720px.
 - Heading: 40px desktop, 32px mobile, weight 500, line-height 1.15. Step indicator
   to heading: 20px; heading to introduction: 12px; introduction to guidance: 24px.
 - Guidance: 20px padding, followed by 28px before the form. Labels sit 8px above
@@ -32,6 +35,10 @@ copy Meta's colors or add content, decorative badges, icons or features.
   16px horizontal padding. Retain visible keyboard focus.
 - Main action: 28px after the last field, 50px minimum height, weight 500, no
   shadow or hover lift. Retain existing colors and disabled/enabled behavior.
+- Buttons, inputs and setup choices use 8px corners rather than pill shapes.
+  Setup groups have 28px gaps; choices have 12px gaps and 16px padding. Keep
+  configuration directly on the page instead of inside an additional card.
+  Selected choices keep their existing purple fill and expose aria-pressed.
 - Keep at least 48px below content; let short screens scroll naturally.
 - These are approved Yourkly specifications, not measured Meta CSS. The zoomed-out
   Help Center screenshot is a composition reference only.
@@ -147,7 +154,9 @@ The mobile rules live at the **end of `tokens.css`**, the last stylesheet `main.
 A media query carries no extra specificity, so an override only wins by loading after the
 rule it overrides. Half of them did nothing when they sat in `index.css`.
 
-**There is exactly one navigation in the app**, `AppShell`. No page renders its own nav.
+**Authenticated GitHub pages use one navigation**, `AppShell`; do not duplicate it.
+The standalone `/native/new` page uses `NativeHeader` instead, with links to Home
+and My Projects. This header is never rendered inside `AppShell`.
 This is worth stating because it was broken once: two screens kept an old sidebar and the
 app showed two side by side.
 
