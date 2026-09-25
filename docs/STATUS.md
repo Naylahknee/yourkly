@@ -332,3 +332,11 @@ with Plainly's identity as a plain-language interface for GitHub.
 
 No tasks are currently in progress. The Project Intelligence Layer is complete.
 The build is clean: **70 modules, 0 errors, 5.41s** (`npm run build`, 2025-07-12).
+
+## Current Update (2026-09-24 — Yourkly project entry flow)
+
+- The landing-page “Continue with Yourkly” action now opens the Yourkly project list directly and remembers the selected local workspace mode. It no longer sends users through an extra onboarding screen before they can continue.
+- The empty project list shows one create action. The “+ New project” action appears once projects exist.
+- The new-project form now keeps “My Projects” available in its header so users can return to their saved projects.
+- GitHub sign-in continues to use the existing OAuth flow and returns to the signed-in dashboard. Yourkly-only projects remain stored in the current browser on this device.
+- Validation: `npm run build` passed (119 modules, 0 errors). Vite reports the existing main JavaScript bundle just over its 500 kB advisory threshold.

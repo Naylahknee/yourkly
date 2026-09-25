@@ -177,3 +177,16 @@ boundary.
 **Alternatives considered:**
 - Allowing all OpenAI crawlers — rejected because it provides no additional search-discovery requirement and changes the training preference.
 - Blocking all AI crawlers — rejected because it would reduce eligibility for search discovery and citations.
+
+## D-009 — Continue with Yourkly opens the project workspace directly
+
+**Date:** 2026-09-24
+**Status:** Active
+
+**Decision:** The signed-out “Continue with Yourkly” action enters the Yourkly-managed project list directly. The optional guided chooser uses the same destination when someone chooses Yourkly. The new-project page retains a visible link back to that list.
+
+**Reason:** People choosing the no-GitHub path should reach their usable workspace without repeating the same continue action across multiple introduction screens. Their local project list is the home for returning to existing Yourkly projects.
+
+**Alternatives considered:**
+- Keep the introduction step before the workspace — rejected because it added an extra click without changing the next destination.
+- Route Yourkly-only projects through GitHub — rejected because the no-GitHub path is meant to work without connecting a GitHub account.
