@@ -1,6 +1,6 @@
 import { exchangeCode } from '../../lib/oauth.js'
 import { readOAuthTransaction, setSession, clearAuthCookies, clearOAuthTransaction, originIsSameSite } from '../../lib/session.js'
-import { hasSafeSize, limit, requireJson } from '../../lib/security.js'
+import { hasSafeSize, limit, requireJson, safeEqual } from '../../lib/security.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   if (!requireJson(req, res) || !limit(req, res, { max: 10, windowMs: 60_000 })) return
   const { code, state } = req.body || {}
   const transaction = readOAuthTransaction(req)
-  if (!hasSafeSize(code, 2048) || !hasSafeSize(state, 256) || !transaction || state !== transaction.state) {
+  if (!hasSafeSize(code, 2048) || !hasSafeSize(state, 256) || !transaction || !safeEqual(state, transaction.state)) {
     clearAuthCookies(res)
     return res.status(400).json({ error: 'invalid_oauth_callback' })
   }

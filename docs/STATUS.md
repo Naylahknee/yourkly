@@ -5,6 +5,41 @@ every substantial task. See `AGENTS.md` for the update protocol.
 
 ---
 
+## Phase 0 security fixes — 2026-11-17
+
+What changed:
+- **Proxy allowlist (S-1):** the new `lib/githubAllowlist.js` is used by
+  `api/github/[...path].js`. Only the requests `src/api/github.js` makes are forwarded;
+  anything else gets `403 github_request_not_allowed`.
+- **Bug fixed as a side effect:** the old `..` check rejected `compare/a...b`. Comparisons
+  through the proxy (used by `ReturnFromAI` and branch compare) now go through.
+- **DOMPurify (S-2):** bumped from 3.4.16 to 3.4.18 in `package-lock.json`.
+- **Constant-time comparisons:** `lib/security.js` has a new `safeEqual`, used for the
+  CSRF checks (proxy, check, logout) and for the OAuth `state` check in `exchange.js`.
+  The behavior is otherwise identical.
+- **Rate-limit key:** now uses `x-vercel-forwarded-for` / `x-real-ip`, and the query
+  string is stripped.
+- **HSTS:** added to `vercel.json`.
+- **Tests:** added an `npm test` script and `tests/github-allowlist.test.js`.
+- **CI:** added `.github/workflows/ci.yml` (build, test, audit) and
+  `.github/dependabot.yml`.
+
+Validation:
+- `npm test` passed 8/8.
+- `npm run build` passed (118 modules; existing >500 kB warning).
+- `npm audit --omit=dev` reports 0 vulnerabilities.
+
+Not yet verified:
+- No live sign-in or editing session was run against real GitHub. Do a manual smoke test
+  on a preview deploy after merging: open a project, save, view history, compare, publish
+  and star.
+
+Still open:
+- **S-4:** Vercel Firewall rate-limit rules. This is a production config change waiting
+  for owner approval.
+- **Repository settings to turn on:** CodeQL, secret scanning and push protection.
+- **Phases 1–5** of `docs/BUILD_PLAN.md`.
+
 ## Security review & build plan — 2026-11-17
 
 - Added `docs/BUILD_PLAN.md`: security findings, feature gaps vs GitHub, a phased build

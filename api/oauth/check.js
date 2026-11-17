@@ -8,7 +8,7 @@
 
 import { checkToken } from '../../lib/oauth.js'
 import { readSession, originIsSameSite } from '../../lib/session.js'
-import { limit, requireJson } from '../../lib/security.js'
+import { limit, requireJson, safeEqual } from '../../lib/security.js'
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   if (!originIsSameSite(req)) return res.status(403).json({ error: 'forbidden' })
   if (!requireJson(req, res) || !limit(req, res, { max: 30, windowMs: 60_000 })) return
   const session = readSession(req)
-  if (!session || req.headers?.['x-csrf-token'] !== session.csrf) return res.status(401).json({ error: 'not_signed_in' })
+  if (!session || !safeEqual(req.headers?.['x-csrf-token'], session.csrf)) return res.status(401).json({ error: 'not_signed_in' })
 
   try {
     res.json(await checkToken(session.token))

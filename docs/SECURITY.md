@@ -201,3 +201,29 @@ body: JSON.stringify({ name, auto_init: true, private: true })
 This matches the principle of least surprise: a user managing personal writing documents
 should not have those documents public by default. The user can change a project to
 public via the Project Settings modal in the Files page if they choose.
+
+---
+
+## SEC-005 — GitHub proxy relayed any request on the account or a repository
+
+**Status:** Resolved — 2026-11-17
+**Severity:** High
+
+### What was happening
+
+The proxy accepted any HTTP method on any path that started with `/user` or `/repos/{owner}/{repo}`. Any script able to run on the page could call `/api/session` to get the CSRF token. It could then use the person's `repo`-scope token to add an SSH key (`POST /user/keys`), deploy keys, or webhooks, invite collaborators, or read email addresses.
+
+### Fix applied
+
+There is now an explicit method + path allowlist (`lib/githubAllowlist.js`, decision D-011), tested in `tests/github-allowlist.test.js`. Dot segments are refused, including percent-encoded ones, and so are backslashes and schemes. CSRF and OAuth `state` comparisons now use `crypto.timingSafeEqual`.
+
+The old blanket `..` check also rejected GitHub's `compare/base...head` URLs. Those comparisons are now allowed.
+
+---
+
+## SEC-006 — Smaller hardening (2026-11-17)
+
+- **Resolved:** DOMPurify bumped from 3.4.16 to 3.4.18 (GHSA-c6gr-qvv4-5v3f). `npm audit --omit=dev` reports 0 vulnerabilities.
+- **Resolved:** a `Strict-Transport-Security` header was added (2 years, includeSubDomains). `preload` was left out on purpose, because joining the browser preload list is hard to undo.
+- **Partly resolved:** the rate-limit key now uses Vercel's own client-IP headers and ignores query strings. The limiter is still per-instance memory, so production limits should move to Vercel Firewall rules (BUILD_PLAN S-4). **Open.**
+- **Added:** a CI workflow (build, tests, runtime dependency audit) and Dependabot.

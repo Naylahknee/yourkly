@@ -188,6 +188,12 @@ Each phase is shippable on its own. Security comes first because collaboration m
 the impact of every open issue.
 
 ### Phase 0 — Quick security fixes (week 1)
+> **Status, 2026-11-17:**
+> - Done: items 1, 2 and 4, plus the CI workflow and Dependabot.
+> - Remaining:
+>   - Item 3: Vercel Firewall rules, which need owner approval.
+>   - Turning on CodeQL, secret scanning and push protection in the repository settings.
+
 1. S-2: `npm audit fix`, then rebuild.
 2. S-1: explicit proxy allowlist, plus tests for blocked paths.
 3. S-4: Vercel Firewall rate-limit rules.

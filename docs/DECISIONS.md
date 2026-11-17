@@ -202,3 +202,20 @@ boundary.
 
 **Alternatives considered:**
 - Warn and ask for confirmation without auto-saving — rejected because a misclick could still destroy unsaved work.
+
+---
+
+## D-011 — The GitHub proxy forwards only an explicit allowlist of requests
+
+**Date:** 2026-11-17
+**Status:** Active
+
+**Decision:** `api/github/[...path].js` forwards a request only if its method and path match a rule in `lib/githubAllowlist.js`. Each rule corresponds to a call in `src/api/github.js`. Everything else gets `403 github_request_not_allowed` and never reaches GitHub.
+
+**Reason:** The session token has `repo` scope. The previous prefix regex relayed any method on any `/user/*` or `/repos/{o}/{r}/*` path. That meant one malicious script could add SSH or deploy keys, webhooks or collaborators: permanent account access that outlives sign-out.
+
+**Alternatives considered:**
+- Keep the prefix regex and add a denylist of dangerous paths. Rejected because GitHub keeps adding endpoints, so a denylist fails open.
+- Wait for the GitHub App migration (SEC-003). Rejected because that is weeks away, and narrower scopes don't stop a relay of everything the scope allows.
+
+**Consequence:** A new feature that needs another GitHub call must add a rule and a test (`tests/github-allowlist.test.js`).
