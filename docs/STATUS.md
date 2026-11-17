@@ -5,6 +5,20 @@ every substantial task. See `AGENTS.md` for the update protocol.
 
 ---
 
+## Security review & build plan — 2026-11-17
+
+- Added `docs/BUILD_PLAN.md`: security findings, feature gaps vs GitHub, a phased build
+  plan, and recommended connectors. No application code changed.
+- Most urgent open risks:
+  - **S-1:** the GitHub proxy allows any method on any `/user/*` or
+    `/repos/{o}/{r}/*` path. That includes adding SSH or deploy keys, adding webhooks,
+    inviting collaborators, and deleting repos.
+  - **S-2:** `npm audit` reports a critical DOMPurify advisory.
+  - **S-4:** in-memory rate limiting is ineffective on serverless.
+- Validation: `npm run build` passed (bundle >500 kB warning).
+  `node --test tests/server-reliability.test.js` passed 4/4.
+- Nothing committed (owner has not asked).
+
 ## Native "welcome back" fix — 2026-09-30
 
 Owner report: clicking "Continue with Yourkly" on the landing page dropped her
