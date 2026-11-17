@@ -103,6 +103,11 @@ can't offer "sign out of all devices", and a copied cookie keeps working until i
 
 ### S-6 — Dangerous actions need only one click · **Medium**
 
+> **Correction, 2026-11-17:** this was overstated. Delete already requires typing the
+> project name (`Settings.jsx`), and "Make public" already asks for a second
+> confirmation (`Share.jsx`). What's still missing: re-authentication when the session is
+> old, and the user-visible activity log.
+
 "Delete project", "Make public (anyone with the link)", and "Restore an old version" run
 with the same session as reading a file. Share already asks for a second confirmation.
 **Fix:** add **step-up confirmation** for destructive or exposure-changing actions. Make the
@@ -111,6 +116,10 @@ user type the project name, and require re-authentication if the session is more
 "You made 'Novel' public on Tuesday at 3:14pm". *Effort: 2 days.*
 
 ### S-7 — Data in this browser outlives the sign-in · **Medium**
+
+> **Short-term fix done, 2026-11-17:** Account has an "Also remove my Yourkly information
+> from this computer" choice at sign-out (`src/utils/deviceData.js`). It says how many
+> unsaved changes would be lost, and it never removes native projects.
 
 Native projects, drafts, project memory, update memory, and the project picker all live
 unencrypted in `localStorage`. On a shared or library computer, the next person sees all of

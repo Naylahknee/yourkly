@@ -227,3 +227,16 @@ The old blanket `..` check also rejected GitHub's `compare/base...head` URLs. Th
 - **Resolved:** a `Strict-Transport-Security` header was added (2 years, includeSubDomains). `preload` was left out on purpose, because joining the browser preload list is hard to undo.
 - **Partly resolved:** the rate-limit key now uses Vercel's own client-IP headers and ignores query strings. The limiter is still per-instance memory, so production limits should move to Vercel Firewall rules (BUILD_PLAN S-4). **Open.**
 - **Added:** a CI workflow (build, tests, runtime dependency audit) and Dependabot.
+
+---
+
+## SEC-007 — Signed-in data stayed in the browser after sign-out
+
+**Status:** Partly resolved — 2026-11-17
+**Severity:** Medium
+
+Project memory, updates, the project list and unsaved drafts live in `localStorage`, so
+they survive sign-out. On a shared computer, the next person can see them.
+**Fix applied:** Account now offers to remove this data at sign-out (`src/utils/deviceData.js`).
+**Still open:** native projects are device-only by design (D-009) and stay unencrypted in
+the browser. Fixing that needs Yourkly accounts with cloud sync (BUILD_PLAN Phase 4).

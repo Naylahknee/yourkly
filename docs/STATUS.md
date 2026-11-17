@@ -5,6 +5,27 @@ every substantial task. See `AGENTS.md` for the update protocol.
 
 ---
 
+## Sign-out can clear this computer (S-7) — 2026-11-17
+
+- Added `src/utils/deviceData.js`:
+  - `countUnsavedDrafts()` counts unsaved changes.
+  - `clearSignedInData()` removes `plainly_drafts_*`, `plainly_memory_*`,
+    `plainly_updates_*`, `plainly_tasks_*`, `plainly_projects_*`,
+    `yourkly_onboarding_source` and session `yourkly_projects_delivered_*`.
+  - It keeps native projects (`yourkly_native_*`) and display preferences.
+- `src/pages/Account.jsx` has a new checkbox above Sign out: "Also remove my Yourkly
+  information from this computer". It's off by default. When unsaved drafts exist, it says
+  how many would be thrown away. Styles live in `src/styles/tokens.css` (`.account-forget`).
+- No route, auth-flow or API changes. No new dependencies.
+- Validation:
+  - `npm test` passed 11/11 (new `tests/device-data.test.js`).
+  - `npm run build` passed.
+  - Browser check (Playwright, fake session, 390px wide): the checkbox renders and reads
+    correctly. Sign-out unticked keeps drafts; ticked removes them and keeps native
+    projects.
+- S-6 turned out to be mostly in place already (typed-name delete, double-confirm public).
+  BUILD_PLAN is corrected.
+
 ## Phase 0 security fixes — 2026-11-17
 
 What changed:
