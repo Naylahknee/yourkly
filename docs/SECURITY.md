@@ -240,3 +240,22 @@ they survive sign-out. On a shared computer, the next person can see them.
 **Fix applied:** Account now offers to remove this data at sign-out (`src/utils/deviceData.js`).
 **Still open:** native projects are device-only by design (D-009) and stay unencrypted in
 the browser. Fixing that needs Yourkly accounts with cloud sync (BUILD_PLAN Phase 4).
+
+---
+
+## SEC-008 — Sessions had no idle timeout
+
+**Status:** Resolved — 2026-11-17
+**Severity:** Medium
+
+Sessions lasted a fixed 8 hours however long they sat unused.
+**Fix applied:**
+- `lib/session.js` records a last-active time (`seen`) in the sealed cookie and refuses a
+  session idle for more than 2 hours (`SESSION_IDLE_SECONDS`).
+- The proxy and `/api/session` call `touchSession`, which re-seals the cookie at most every
+  5 minutes. The token, CSRF value and 8-hour overall expiry are unchanged.
+- Sessions sealed before this change have no `seen`; they stay bounded by the 8-hour
+  expiry and gain `seen` on their next request.
+- `src/api/github.js` announces any 401, and `useAuth` sends the person to
+  `/?session_ended=1`, where Welcome explains what happened. A 30-second guard stops
+  redirect loops. Drafts stay in the browser.

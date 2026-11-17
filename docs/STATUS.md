@@ -5,6 +5,30 @@ every substantial task. See `AGENTS.md` for the update protocol.
 
 ---
 
+## Idle sign-out and ended-session message (S-5) — 2026-11-17
+
+- **Decision:** the owner chose to stay on Vercel with no Marketplace add-ons (D-012).
+- **Server:**
+  - `lib/session.js` adds `seen` to the sealed session and a 2-hour idle limit
+    (`SESSION_IDLE_SECONDS`).
+  - `touchSession()` refreshes `seen` at most every 5 minutes.
+  - It's called from `api/github/[...path].js` (after the allowlist check) and
+    `api/session.js`. The OAuth exchange is untouched; `setSession` just adds `seen`.
+- **App:**
+  - `src/api/github.js` routes every call through `apiFetch`, which fires
+    `yourkly:signed-out` on a 401. Responses are otherwise unchanged.
+  - `useAuth` listens for it and goes to `/?session_ended=1` (once per 30 seconds at most).
+  - `Welcome.jsx` explains: signed out after 2 hours idle or 8 hours total, unsaved work
+    is still on this computer.
+- **Validation:**
+  - `npm test` passed 13/13 (new `tests/session-idle.test.js`).
+  - `npm run build` passed.
+  - Playwright with a mocked session: a 401 from the proxy leads to `/?session_ended=1`
+    with the message shown.
+- **Risk:** someone who writes in the editor for over 2 hours without saving will be
+  signed out on their next save. Their draft is kept, and they sign in again to save.
+  Raise `SESSION_IDLE_SECONDS` if this proves annoying.
+
 ## Sign-out can clear this computer (S-7) — 2026-11-17
 
 - Added `src/utils/deviceData.js`:

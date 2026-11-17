@@ -1,4 +1,4 @@
-import { readSession, originIsSameSite } from '../../lib/session.js'
+import { readSession, touchSession, originIsSameSite } from '../../lib/session.js'
 import { limit, safeEqual } from '../../lib/security.js'
 import { isAllowedGitHubRequest } from '../../lib/githubAllowlist.js'
 
@@ -28,6 +28,7 @@ export default async function handler(req, res) {
 
   const path = requestedPath(req)
   if (!isAllowedGitHubRequest(req.method, path)) return res.status(403).json({ error: 'github_request_not_allowed' })
+  touchSession(res, session)
 
   try {
     const response = await fetch(`https://api.github.com${path}`, {

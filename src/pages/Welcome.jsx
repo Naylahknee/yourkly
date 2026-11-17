@@ -78,6 +78,7 @@ export default function Welcome() {
   const params = new URLSearchParams(window.location.search)
   const authError = params.get('auth_error')
   const disconnectFailed = params.get('disconnect_failed') === '1'
+  const sessionEnded = params.get('session_ended') === '1'
 
   // Native projects live in this browser's local storage. If the person has
   // been here before, say so on the landing page — otherwise the old projects
@@ -161,6 +162,14 @@ export default function Welcome() {
               ) : null}
 
               {startFailed && <p className="error-box welcome-error">Yourkly could not start the secure sign-in check. Please try again.</p>}
+
+              {sessionEnded && (
+                <p className="error-box welcome-error">
+                  You were signed out to keep your projects safe. This happens after 2 hours without
+                  activity, or 8 hours in total. Anything you hadn't saved yet is still on this
+                  computer. Connect GitHub again to carry on.
+                </p>
+              )}
 
               {disconnectFailed && (
                 <p className="error-box welcome-error">

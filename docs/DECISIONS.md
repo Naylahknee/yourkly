@@ -219,3 +219,24 @@ boundary.
 - Wait for the GitHub App migration (SEC-003). Rejected because that is weeks away, and narrower scopes don't stop a relay of everything the scope allows.
 
 **Consequence:** A new feature that needs another GitHub call must add a rule and a test (`tests/github-allowlist.test.js`).
+
+---
+
+## D-012 — Stay on Vercel; no Marketplace add-ons for sign-in security
+
+**Date:** 2026-11-17
+**Status:** Active. Defers D-004.
+
+**Decision:** Yourkly stays on Vercel. The owner doesn't want Marketplace add-ons, so the
+session hardening needs no server-side store:
+- Idle timeout is recorded inside the sealed session cookie.
+- "Sign out of all devices" is already provided by revoking the GitHub grant at sign-out.
+- Rate limits will use the built-in Vercel Firewall.
+
+**Reason:** Moving to Cloudflare would take several days and carries cut-over risk. None
+of the current security work needs it, and the site already runs and previews on Vercel.
+
+**Alternatives considered:**
+- Move to Cloudflare now (D-004), for built-in KV/D1/R2. Deferred: revisit when Phase 4
+  (Yourkly accounts and cloud sync) needs a database and file storage.
+- Upstash Redis via the Vercel Marketplace. Rejected by the owner.

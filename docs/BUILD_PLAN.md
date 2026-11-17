@@ -87,6 +87,15 @@ Key on `x-vercel-forwarded-for` or `x-real-ip`. *Effort: ½ day.*
 
 ### S-5 — Sessions can't be ended from the server · **Medium**
 
+> **Correction and status, 2026-11-17:**
+> - "Sign out of all devices" already works. Signing out revokes the GitHub grant, which
+>   kills the token inside every other device's cookie, so their next request fails.
+> - **Done:** a 2-hour idle timeout is kept in the sealed cookie (no store needed).
+> - **Done:** the app now explains an ended session instead of showing "Could not save".
+> - **Still open:** the key ring and `__Host-` cookie rename. Both would force everyone to
+>   sign in once more.
+> - The owner chose to stay on Vercel without add-ons (D-012).
+
 The session lives entirely in the cookie, so Yourkly has no list of active sessions. It
 can't offer "sign out of all devices", and a copied cookie keeps working until it expires
 (up to 8 hours) or the user revokes the grant on GitHub. There's no idle timeout. Rotating
@@ -242,7 +251,7 @@ no GitHub account, it needs its own accounts and storage:
 - **Login:** passkeys plus email magic link, and optional TOTP. No passwords.
 - **Storage:** content-addressed snapshots (the native snapshot engine already exists),
   synced to a database and object store, end-to-end where practical.
-- **Hosting choice:** D-004 says Cloudflare is the intended future host, but production is
+- **Hosting choice (revisit; D-012 keeps Vercel for now):** D-004 says Cloudflare is the intended future host, but production is
   on Vercel. Pick one before this phase:
   - **Cloudflare:** D1, KV, and R2, which lines up with D-004.
   - **Supabase:** Postgres, Auth with passkeys/magic link, Storage, and row-level security.

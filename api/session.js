@@ -1,4 +1,4 @@
-import { readSession, originIsSameSite } from '../lib/session.js'
+import { readSession, touchSession, originIsSameSite } from '../lib/session.js'
 import { limit } from '../lib/security.js'
 
 export default async function handler(req, res) {
@@ -12,6 +12,7 @@ export default async function handler(req, res) {
   if (!limit(req, res, { max: 60, windowMs: 60_000 })) return
   const session = readSession(req)
   if (!session) return res.status(401).json({ error: 'not_signed_in' })
+  touchSession(res, session)
 
   try {
     const response = await fetch('https://api.github.com/user', {
