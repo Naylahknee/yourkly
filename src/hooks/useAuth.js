@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getCsrfToken, setCsrfToken } from '../api/github'
+import { getCsrfToken, setCsrfToken, SIGNED_OUT_EVENT } from '../api/github'
 
 export function useAuth() {
   const [token, setToken] = useState(null)
@@ -24,6 +24,29 @@ export function useAuth() {
       .finally(() => { if (!cancelled) setLoading(false) })
     return () => { cancelled = true }
   }, [])
+
+  // The server stopped accepting this sign-in. Go to the start page, which says
+  // why. Drafts stay in this browser, so nothing unsaved is lost. A full page
+  // load (not navigate) also clears every screen's in-memory state.
+  useEffect(() => {
+    if (!token) return
+    let handled = false
+    function onSignedOut() {
+      if (handled) return
+      handled = true
+      // Never bounce in a loop: if this already happened moments ago, the
+      // session check disagrees with GitHub, and a reload won't fix that.
+      try {
+        const last = Number(sessionStorage.getItem('yourkly_session_ended_at') || 0)
+        if (Date.now() - last < 30_000) return
+        sessionStorage.setItem('yourkly_session_ended_at', String(Date.now()))
+      } catch { /* storage blocked: redirect anyway */ }
+      setCsrfToken('')
+      window.location.assign('/?session_ended=1')
+    }
+    window.addEventListener(SIGNED_OUT_EVENT, onSignedOut)
+    return () => window.removeEventListener(SIGNED_OUT_EVENT, onSignedOut)
+  }, [token])
 
   function signIn() {
     // The OAuth callback has already set the HttpOnly session cookie. Reloading

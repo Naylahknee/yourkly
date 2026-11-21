@@ -15,12 +15,16 @@ import { useNavigate } from 'react-router-dom'
 import { useShowGithubWords } from '../utils/settings'
 import { getCsrfToken } from '../api/github'
 import InteractiveProfile from '../components/InteractiveProfile'
+import { clearSignedInData, countUnsavedDrafts } from '../utils/deviceData'
 
 export default function Account({ auth }) {
   const { user, token, signOut } = auth
   const navigate = useNavigate()
   const [showWords, toggleWords] = useShowGithubWords()
   const [signingOut, setSigningOut] = useState(false)
+  // Off by default: on your own computer, keeping unsaved work is the safer choice.
+  const [forgetDevice, setForgetDevice] = useState(false)
+  const [unsaved] = useState(() => countUnsavedDrafts())
 
   // Whether GitHub still holds an authorization for this account. Asked, not
   // assumed — 'checking' until GitHub answers, and null if it couldn't be
@@ -44,6 +48,7 @@ export default function Account({ auth }) {
   async function handleSignOut() {
     setSigningOut(true)
     const { revoked } = await signOut()
+    if (forgetDevice) clearSignedInData()
     // You're signed out either way. If GitHub still lists Yourkly, the Welcome
     // screen says so and points at where to remove it.
     navigate(revoked ? '/' : '/?disconnect_failed=1', { replace: true })
@@ -105,13 +110,34 @@ export default function Account({ auth }) {
         </button>
       </div>
 
+      <label className="account-forget">
+        <input
+          type="checkbox"
+          checked={forgetDevice}
+          onChange={e => setForgetDevice(e.target.checked)}
+          disabled={signingOut}
+        />
+        <span>
+          <strong>Also remove my Yourkly information from this computer</strong>
+          <small>
+            Choose this on a shared or public computer. It removes your project notes, updates and
+            list of projects from this browser.
+            {unsaved > 0 && (
+              <> It also throws away <strong>{unsaved} unsaved {unsaved === 1 ? 'change' : 'changes'}</strong> that
+              {unsaved === 1 ? " hasn't" : " haven't"} been saved to GitHub yet.</>
+            )}
+            {' '}Projects you made with Yourkly on this device aren't removed.
+          </small>
+        </span>
+      </label>
+
       <div className="account-signout">
         <button className="pl-btn" onClick={handleSignOut} disabled={signingOut}>
           {signingOut ? 'Signing out…' : 'Sign out'}
         </button>
         <span className="account-signout-note">
           This also disconnects Yourkly from your GitHub account. Your files stay in GitHub,
-          and anything you haven't saved yet stays on this computer. Next time you sign in,
+          and anything you haven't saved yet stays on this computer unless you chose to remove it above. Next time you sign in,
           GitHub will ask you to allow access again.
         </span>
       </div>

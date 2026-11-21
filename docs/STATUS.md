@@ -5,6 +5,100 @@ every substantial task. See `AGENTS.md` for the update protocol.
 
 ---
 
+## Idle sign-out and ended-session message (S-5) — 2026-11-17
+
+- **Decision:** the owner chose to stay on Vercel with no Marketplace add-ons (D-012).
+- **Server:**
+  - `lib/session.js` adds `seen` to the sealed session and a 2-hour idle limit
+    (`SESSION_IDLE_SECONDS`).
+  - `touchSession()` refreshes `seen` at most every 5 minutes.
+  - It's called from `api/github/[...path].js` (after the allowlist check) and
+    `api/session.js`. The OAuth exchange is untouched; `setSession` just adds `seen`.
+- **App:**
+  - `src/api/github.js` routes every call through `apiFetch`, which fires
+    `yourkly:signed-out` on a 401. Responses are otherwise unchanged.
+  - `useAuth` listens for it and goes to `/?session_ended=1` (once per 30 seconds at most).
+  - `Welcome.jsx` explains: signed out after 2 hours idle or 8 hours total, unsaved work
+    is still on this computer.
+- **Validation:**
+  - `npm test` passed 13/13 (new `tests/session-idle.test.js`).
+  - `npm run build` passed.
+  - Playwright with a mocked session: a 401 from the proxy leads to `/?session_ended=1`
+    with the message shown.
+- **Risk:** someone who writes in the editor for over 2 hours without saving will be
+  signed out on their next save. Their draft is kept, and they sign in again to save.
+  Raise `SESSION_IDLE_SECONDS` if this proves annoying.
+
+## Sign-out can clear this computer (S-7) — 2026-11-17
+
+- Added `src/utils/deviceData.js`:
+  - `countUnsavedDrafts()` counts unsaved changes.
+  - `clearSignedInData()` removes `plainly_drafts_*`, `plainly_memory_*`,
+    `plainly_updates_*`, `plainly_tasks_*`, `plainly_projects_*`,
+    `yourkly_onboarding_source` and session `yourkly_projects_delivered_*`.
+  - It keeps native projects (`yourkly_native_*`) and display preferences.
+- `src/pages/Account.jsx` has a new checkbox above Sign out: "Also remove my Yourkly
+  information from this computer". It's off by default. When unsaved drafts exist, it says
+  how many would be thrown away. Styles live in `src/styles/tokens.css` (`.account-forget`).
+- No route, auth-flow or API changes. No new dependencies.
+- Validation:
+  - `npm test` passed 11/11 (new `tests/device-data.test.js`).
+  - `npm run build` passed.
+  - Browser check (Playwright, fake session, 390px wide): the checkbox renders and reads
+    correctly. Sign-out unticked keeps drafts; ticked removes them and keeps native
+    projects.
+- S-6 turned out to be mostly in place already (typed-name delete, double-confirm public).
+  BUILD_PLAN is corrected.
+
+## Phase 0 security fixes — 2026-11-17
+
+What changed:
+- **Proxy allowlist (S-1):** the new `lib/githubAllowlist.js` is used by
+  `api/github/[...path].js`. Only the requests `src/api/github.js` makes are forwarded;
+  anything else gets `403 github_request_not_allowed`.
+- **Bug fixed as a side effect:** the old `..` check rejected `compare/a...b`. Comparisons
+  through the proxy (used by `ReturnFromAI` and branch compare) now go through.
+- **DOMPurify (S-2):** bumped from 3.4.16 to 3.4.18 in `package-lock.json`.
+- **Constant-time comparisons:** `lib/security.js` has a new `safeEqual`, used for the
+  CSRF checks (proxy, check, logout) and for the OAuth `state` check in `exchange.js`.
+  The behavior is otherwise identical.
+- **Rate-limit key:** now uses `x-vercel-forwarded-for` / `x-real-ip`, and the query
+  string is stripped.
+- **HSTS:** added to `vercel.json`.
+- **Tests:** added an `npm test` script and `tests/github-allowlist.test.js`.
+- **CI:** added `.github/workflows/ci.yml` (build, test, audit) and
+  `.github/dependabot.yml`.
+
+Validation:
+- `npm test` passed 8/8.
+- `npm run build` passed (118 modules; existing >500 kB warning).
+- `npm audit --omit=dev` reports 0 vulnerabilities.
+
+Not yet verified:
+- No live sign-in or editing session was run against real GitHub. Do a manual smoke test
+  on a preview deploy after merging: open a project, save, view history, compare, publish
+  and star.
+
+Still open:
+- **S-4:** Vercel Firewall rate-limit rules. This is a production config change waiting
+  for owner approval.
+- **Repository settings to turn on:** CodeQL, secret scanning and push protection.
+- **Phases 1–5** of `docs/BUILD_PLAN.md`.
+
+## Security review & build plan — 2026-11-17
+
+- Added `docs/BUILD_PLAN.md`: security findings, feature gaps vs GitHub, a phased build
+  plan, and recommended connectors. No application code changed.
+- Most urgent open risks:
+  - **S-1:** the GitHub proxy allows any method on any `/user/*` or
+    `/repos/{o}/{r}/*` path. That includes adding SSH or deploy keys, adding webhooks,
+    inviting collaborators, and deleting repos.
+  - **S-2:** `npm audit` reports a critical DOMPurify advisory.
+  - **S-4:** in-memory rate limiting is ineffective on serverless.
+- Validation: `npm run build` passed (bundle >500 kB warning).
+  `node --test tests/server-reliability.test.js` passed 4/4.
+- Nothing committed (owner has not asked).
+
 ## Native "welcome back" fix — 2026-09-30
 
 Owner report: clicking "Continue with Yourkly" on the landing page dropped her

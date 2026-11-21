@@ -202,3 +202,41 @@ boundary.
 
 **Alternatives considered:**
 - Warn and ask for confirmation without auto-saving — rejected because a misclick could still destroy unsaved work.
+
+---
+
+## D-011 — The GitHub proxy forwards only an explicit allowlist of requests
+
+**Date:** 2026-11-17
+**Status:** Active
+
+**Decision:** `api/github/[...path].js` forwards a request only if its method and path match a rule in `lib/githubAllowlist.js`. Each rule corresponds to a call in `src/api/github.js`. Everything else gets `403 github_request_not_allowed` and never reaches GitHub.
+
+**Reason:** The session token has `repo` scope. The previous prefix regex relayed any method on any `/user/*` or `/repos/{o}/{r}/*` path. That meant one malicious script could add SSH or deploy keys, webhooks or collaborators: permanent account access that outlives sign-out.
+
+**Alternatives considered:**
+- Keep the prefix regex and add a denylist of dangerous paths. Rejected because GitHub keeps adding endpoints, so a denylist fails open.
+- Wait for the GitHub App migration (SEC-003). Rejected because that is weeks away, and narrower scopes don't stop a relay of everything the scope allows.
+
+**Consequence:** A new feature that needs another GitHub call must add a rule and a test (`tests/github-allowlist.test.js`).
+
+---
+
+## D-012 — Stay on Vercel; no Marketplace add-ons for sign-in security
+
+**Date:** 2026-11-17
+**Status:** Active. Defers D-004.
+
+**Decision:** Yourkly stays on Vercel. The owner doesn't want Marketplace add-ons, so the
+session hardening needs no server-side store:
+- Idle timeout is recorded inside the sealed session cookie.
+- "Sign out of all devices" is already provided by revoking the GitHub grant at sign-out.
+- Rate limits will use the built-in Vercel Firewall.
+
+**Reason:** Moving to Cloudflare would take several days and carries cut-over risk. None
+of the current security work needs it, and the site already runs and previews on Vercel.
+
+**Alternatives considered:**
+- Move to Cloudflare now (D-004), for built-in KV/D1/R2. Deferred: revisit when Phase 4
+  (Yourkly accounts and cloud sync) needs a database and file storage.
+- Upstash Redis via the Vercel Marketplace. Rejected by the owner.

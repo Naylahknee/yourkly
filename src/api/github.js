@@ -13,6 +13,22 @@ export function getCsrfToken() {
   return csrfToken
 }
 
+export const SIGNED_OUT_EVENT = 'yourkly:signed-out'
+
+/**
+ * fetch, plus one thing: a 401 means the sign-in has ended (inactivity, the
+ * 8-hour limit, or signing out on another device). Tell the app once, so it can
+ * say so plainly instead of showing "Could not save". The response is still
+ * returned unchanged, so each call handles it exactly as before.
+ */
+async function apiFetch(url, options) {
+  const r = await fetch(url, options)
+  if (r.status === 401 && typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(SIGNED_OUT_EVENT))
+  }
+  return r
+}
+
 function headers(token) {
   return {
     Accept: 'application/vnd.github+json',
@@ -34,13 +50,13 @@ function fromBase64(b64) {
 }
 
 export async function getRepoInfo(token, owner, repo) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}`, { headers: headers(token) })
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}`, { headers: headers(token) })
   if (!r.ok) return null
   return r.json()
 }
 
 export async function getUser(token) {
-  const r = await fetch(`${API}/user`, { headers: headers(token) })
+  const r = await apiFetch(`${API}/user`, { headers: headers(token) })
   if (!r.ok) throw new Error('Could not load your account.')
   return r.json()
 }
@@ -64,7 +80,7 @@ export async function getRepos(token) {
   let truncated = false
 
   for (let page = 1; page <= REPO_PAGE_CAP; page++) {
-    const r = await fetch(`${API}/user/repos?sort=updated&per_page=100&page=${page}`, {
+    const r = await apiFetch(`${API}/user/repos?sort=updated&per_page=100&page=${page}`, {
       headers: headers(token),
     })
     if (!r.ok) {
@@ -83,7 +99,7 @@ export async function getRepos(token) {
 }
 
 export async function createRepo(token, name, description, options = {}) {
-  const r = await fetch(`${API}/user/repos`, {
+  const r = await apiFetch(`${API}/user/repos`, {
     method: 'POST',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     // description is what /new asks for in "what is it for?" — it shows on the
@@ -98,7 +114,7 @@ export async function createRepo(token, name, description, options = {}) {
 const TEXT_EXTENSIONS = ['.txt', '.md', '.markdown', '.mdx', '.text', '.rst']
 
 export async function getFiles(token, owner, repo) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/contents`, { headers: headers(token) })
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/contents`, { headers: headers(token) })
   if (r.status === 404) return []
   if (!r.ok) throw new Error('Could not load the files in this project. Try refreshing the page.')
   const all = await r.json()
@@ -107,7 +123,7 @@ export async function getFiles(token, owner, repo) {
 }
 
 export async function getFileContent(token, owner, repo, path) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
     headers: headers(token)
   })
   if (!r.ok) throw new Error('Could not open this file. Try again.')
@@ -116,7 +132,7 @@ export async function getFileContent(token, owner, repo, path) {
 }
 
 export async function saveFile(token, owner, repo, path, content, sha, message) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
     method: 'PUT',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, content: toBase64(content), sha })
@@ -129,7 +145,7 @@ export async function saveFile(token, owner, repo, path, content, sha, message) 
 }
 
 export async function createFile(token, owner, repo, path) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
     method: 'PUT',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ message: `Created ${path}`, content: toBase64('') })
@@ -140,7 +156,7 @@ export async function createFile(token, owner, repo, path) {
 }
 
 export async function getFileHistory(token, owner, repo, path) {
-  const r = await fetch(
+  const r = await apiFetch(
     `${API}/repos/${owner}/${repo}/commits?path=${encodeURIComponent(path)}&per_page=50`,
     { headers: headers(token) }
   )
@@ -149,7 +165,7 @@ export async function getFileHistory(token, owner, repo, path) {
 }
 
 export async function getFileAtCommit(token, owner, repo, path, sha) {
-  const r = await fetch(
+  const r = await apiFetch(
     `${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${sha}`,
     { headers: headers(token) }
   )
@@ -159,7 +175,7 @@ export async function getFileAtCommit(token, owner, repo, path, sha) {
 }
 
 export async function deleteFile(token, owner, repo, path, sha, message) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
     method: 'DELETE',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, sha })
@@ -169,7 +185,7 @@ export async function deleteFile(token, owner, repo, path, sha, message) {
 }
 
 export async function createFileWithContent(token, owner, repo, path, content, message) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`, {
     method: 'PUT',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, content: toBase64(content) })
@@ -180,7 +196,7 @@ export async function createFileWithContent(token, owner, repo, path, content, m
 }
 
 export async function updateRepoSettings(token, owner, repo, settings) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}`, {
     method: 'PATCH',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify(settings)
@@ -190,7 +206,7 @@ export async function updateRepoSettings(token, owner, repo, settings) {
 }
 
 export async function deleteRepo(token, owner, repo) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}`, {
     method: 'DELETE',
     headers: headers(token)
   })
@@ -201,12 +217,12 @@ export async function deleteRepo(token, owner, repo) {
  * Get the current HEAD SHA for the repo's default branch
  */
 export async function getCurrentHeadSha(token, owner, repo) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}`, { headers: headers(token) })
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}`, { headers: headers(token) })
   if (!r.ok) throw new Error('Could not get repo info.')
   const data = await r.json()
   const branch = data.default_branch || 'main'
 
-  const br = await fetch(`${API}/repos/${owner}/${repo}/branches/${branch}`, { headers: headers(token) })
+  const br = await apiFetch(`${API}/repos/${owner}/${repo}/branches/${branch}`, { headers: headers(token) })
   if (!br.ok) throw new Error('Could not get branch info.')
   const branchData = await br.json()
   return branchData.commit.sha
@@ -221,7 +237,7 @@ export async function compareCommits(token, owner, repo, baseSha, headSha) {
   if (baseSha === headSha) return { filesChanged: 0, commitCount: 0, commits: [] }
 
   try {
-    const r = await fetch(
+    const r = await apiFetch(
       `${API}/repos/${owner}/${repo}/compare/${baseSha}...${headSha}`,
       { headers: headers(token) }
     )
@@ -244,7 +260,7 @@ export async function compareCommits(token, owner, repo, baseSha, headSha) {
  */
 export async function getCommitDetails(token, owner, repo, sha) {
   try {
-    const r = await fetch(`${API}/repos/${owner}/${repo}/commits/${sha}`, { headers: headers(token) })
+    const r = await apiFetch(`${API}/repos/${owner}/${repo}/commits/${sha}`, { headers: headers(token) })
     if (!r.ok) throw new Error('Could not get commit details.')
     return r.json()
   } catch {
@@ -263,7 +279,7 @@ export async function getContents(token, owner, repo, path = '') {
   const url = path
     ? `${API}/repos/${owner}/${repo}/contents/${path.split('/').map(encodeURIComponent).join('/')}`
     : `${API}/repos/${owner}/${repo}/contents`
-  const r = await fetch(url, { headers: headers(token) })
+  const r = await apiFetch(url, { headers: headers(token) })
   if (r.status === 404) return []
   if (!r.ok) throw new Error('Could not load the files in this project. Try refreshing the page.')
   const all = await r.json()
@@ -287,7 +303,7 @@ export async function getContents(token, owner, repo, path = '') {
  */
 export async function getSavePointCount(token, owner, repo) {
   try {
-    const r = await fetch(`${API}/repos/${owner}/${repo}/commits?per_page=1`, {
+    const r = await apiFetch(`${API}/repos/${owner}/${repo}/commits?per_page=1`, {
       headers: headers(token),
     })
     if (r.status === 404 || r.status === 409) return 0   // no repo, or no commits yet
@@ -311,7 +327,7 @@ export async function getSavePointCount(token, owner, repo) {
  * Recent Save Points (commits) on the project's main version.
  */
 export async function getCommits(token, owner, repo, perPage = 20) {
-  const r = await fetch(
+  const r = await apiFetch(
     `${API}/repos/${owner}/${repo}/commits?per_page=${perPage}`,
     { headers: headers(token) }
   )
@@ -332,7 +348,7 @@ export async function getCommits(token, owner, repo, perPage = 20) {
  * request is not a thing to do, so anything carrying `pull_request` is dropped.
  */
 export async function getIssues(token, owner, repo, state = 'open') {
-  const r = await fetch(
+  const r = await apiFetch(
     `${API}/repos/${owner}/${repo}/issues?state=${state}&sort=updated&per_page=50`,
     { headers: headers(token) }
   )
@@ -343,7 +359,7 @@ export async function getIssues(token, owner, repo, state = 'open') {
 }
 
 export async function createIssue(token, owner, repo, title, body) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/issues`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/issues`, {
     method: 'POST',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ title, body: body || undefined }),
@@ -356,7 +372,7 @@ export async function createIssue(token, owner, repo, title, body) {
 
 /** Tick one off, or put it back. `state` is 'closed' or 'open'. */
 export async function setIssueState(token, owner, repo, number, state) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/issues/${number}`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/issues/${number}`, {
     method: 'PATCH',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ state }),
@@ -373,7 +389,7 @@ export async function setIssueState(token, owner, repo, number, state) {
 /** 204 = starred, 404 = not. Anything else means we don't know — say so. */
 export async function isStarred(token, owner, repo) {
   try {
-    const r = await fetch(`${API}/user/starred/${owner}/${repo}`, { headers: headers(token) })
+    const r = await apiFetch(`${API}/user/starred/${owner}/${repo}`, { headers: headers(token) })
     if (r.status === 204) return true
     if (r.status === 404) return false
     return null
@@ -383,7 +399,7 @@ export async function isStarred(token, owner, repo) {
 }
 
 export async function setStarred(token, owner, repo, starred) {
-  const r = await fetch(`${API}/user/starred/${owner}/${repo}`, {
+  const r = await apiFetch(`${API}/user/starred/${owner}/${repo}`, {
     method: starred ? 'PUT' : 'DELETE',
     headers: { ...headers(token), 'Content-Length': '0' },
   })
@@ -394,7 +410,7 @@ export async function setStarred(token, owner, repo, starred) {
 /* ── Separate versions (branches) ──────────────────────────────────────────── */
 
 export async function getBranches(token, owner, repo) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/branches?per_page=100`, { headers: headers(token) })
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/branches?per_page=100`, { headers: headers(token) })
   if (r.status === 404 || r.status === 409) return []
   if (!r.ok) throw new Error('Could not load the versions of this project. Try refreshing.')
   const data = await r.json()
@@ -408,7 +424,7 @@ export async function getBranches(token, owner, repo) {
  */
 export async function compareBranches(token, owner, repo, base, head) {
   try {
-    const r = await fetch(
+    const r = await apiFetch(
       `${API}/repos/${owner}/${repo}/compare/${encodeURIComponent(base)}...${encodeURIComponent(head)}`,
       { headers: headers(token) }
     )
@@ -422,7 +438,7 @@ export async function compareBranches(token, owner, repo, base, head) {
 
 /** Start a separate version from a Save Point. */
 export async function createBranch(token, owner, repo, name, fromSha) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/git/refs`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/git/refs`, {
     method: 'POST',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ ref: `refs/heads/${name}`, sha: fromSha }),
@@ -440,7 +456,7 @@ export async function createBranch(token, owner, repo, name, fromSha) {
  * Branch must already exist with the commits. This links it to main.
  */
 export async function createPullRequest(token, owner, repo, branchName, title, body) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/pulls`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/pulls`, {
     method: 'POST',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -461,7 +477,7 @@ export async function createPullRequest(token, owner, repo, branchName, title, b
  * pr_number is the PR number (not OID).
  */
 export async function mergePullRequest(token, owner, repo, prNumber) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/pulls/${prNumber}/merge`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/pulls/${prNumber}/merge`, {
     method: 'PUT',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -479,14 +495,14 @@ export async function mergePullRequest(token, owner, repo, prNumber) {
 
 /** null means this project isn't published. */
 export async function getPagesSite(token, owner, repo) {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/pages`, { headers: headers(token) })
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/pages`, { headers: headers(token) })
   if (r.status === 404) return null
   if (!r.ok) throw new Error("Yourkly couldn't check whether this project is published.")
   return r.json()
 }
 
 export async function publishPagesSite(token, owner, repo, branch, path = '/') {
-  const r = await fetch(`${API}/repos/${owner}/${repo}/pages`, {
+  const r = await apiFetch(`${API}/repos/${owner}/${repo}/pages`, {
     method: 'POST',
     headers: { ...headers(token), 'Content-Type': 'application/json' },
     body: JSON.stringify({ source: { branch, path } }),
@@ -510,7 +526,7 @@ export async function publishPagesSite(token, owner, repo, branch, path = '/') {
  */
 export async function getCheckRuns(token, owner, repo, ref) {
   try {
-    const r = await fetch(`${API}/repos/${owner}/${repo}/commits/${ref}/check-runs`, {
+    const r = await apiFetch(`${API}/repos/${owner}/${repo}/commits/${ref}/check-runs`, {
       headers: headers(token),
     })
     if (!r.ok) return null

@@ -1,8 +1,8 @@
-import { readSession, originIsSameSite } from '../../lib/session.js'
-import { limit } from '../../lib/security.js'
+import { readSession, touchSession, originIsSameSite } from '../../lib/session.js'
+import { limit, safeEqual } from '../../lib/security.js'
+import { isAllowedGitHubRequest } from '../../lib/githubAllowlist.js'
 
 const METHODS = new Set(['GET', 'POST', 'PUT', 'PATCH', 'DELETE'])
-const SAFE_PATH = /^\/(?:user(?:\/|\?|$)|repos\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(?:\/|\?|$))/
 
 function requestedPath(req) {
   const forwardedPath = req.query?.path
@@ -24,10 +24,11 @@ export default async function handler(req, res) {
   if (req.headers?.origin && !originIsSameSite(req)) return res.status(403).json({ error: 'forbidden' })
   if (!limit(req, res, { max: req.method === 'GET' ? 180 : 45, windowMs: 60_000 })) return
   const session = readSession(req)
-  if (!session || req.headers?.['x-csrf-token'] !== session.csrf) return res.status(401).json({ error: 'not_signed_in' })
+  if (!session || !safeEqual(req.headers?.['x-csrf-token'], session.csrf)) return res.status(401).json({ error: 'not_signed_in' })
 
   const path = requestedPath(req)
-  if (!SAFE_PATH.test(path) || path.includes('..') || path.includes('://')) return res.status(400).json({ error: 'invalid_github_path' })
+  if (!isAllowedGitHubRequest(req.method, path)) return res.status(403).json({ error: 'github_request_not_allowed' })
+  touchSession(res, session)
 
   try {
     const response = await fetch(`https://api.github.com${path}`, {
